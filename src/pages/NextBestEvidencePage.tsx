@@ -26,38 +26,38 @@ export default function NextBestEvidencePage() {
         <div>
           <h1 className="text-2xl font-bold text-white tracking-tight flex items-center gap-2">
             <Crosshair className="text-blue-500 w-6 h-6" />
-            WHAT SHOULD THE INVESTIGATOR FIND NEXT?
+            Top Recommended Action
           </h1>
-          <p className="text-xs text-navy-400 mt-0.5">Next Best Evidence Engine — Ranked by Information Value Score</p>
+          <p className="text-xs text-navy-400 mt-0.5">AI engine ranks clues by how much they help solve the case</p>
         </div>
 
         <span className="prototype-badge">
-          {cctv014Investigated ? 'Evidence Acquired' : '1 Priority Recommendation'}
+          {cctv014Investigated ? 'Evidence Added' : '1 Priority Action Available'}
         </span>
       </div>
 
       {/* Main Action Banner */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Top Recommendation Highlight */}
-        <div className="lg:col-span-2 glass-card p-6 border-red-500/30 bg-red-500/5 space-y-4">
+        <div className="lg:col-span-2 glass-card p-6 border-blue-500/30 bg-blue-500/5 space-y-4">
           <div className="flex justify-between items-start">
             <div>
-              <span className="badge-very-high">🔴 TOP RECOMMENDATION</span>
-              <h2 className="text-xl font-bold text-white mt-2">{topRec?.evidenceSource || 'CCTV-014 (Market Entrance)'}</h2>
-              <p className="text-xs text-navy-400 mt-1">{topRec?.hypothesisDistinction || 'Can distinguish Hypothesis A from B'}</p>
+              <span className="badge-very-high">🔴 HIGH PRIORITY STEP</span>
+              <h2 className="text-xl font-bold text-white mt-2">Check CCTV Camera 014 (Central Bus Stand)</h2>
+              <p className="text-xs text-navy-300 mt-1">This footage will tell us if Rahul boarded a bus or walked toward the market.</p>
             </div>
             <div className="text-right">
-              <span className="text-xs text-navy-400 block uppercase">Expected Reduction</span>
-              <span className="text-2xl font-bold text-emerald-400 font-mono">-{topRec?.expectedUncertaintyReduction || 31}%</span>
+              <span className="text-xs text-navy-400 block uppercase">Confidence Boost</span>
+              <span className="text-2xl font-bold text-emerald-400 font-mono">+23%</span>
             </div>
           </div>
 
           <div className="bg-navy-900/60 p-4 rounded border border-navy-800 space-y-2 text-xs">
-            <span className="font-bold text-navy-200">Why this evidence?</span>
-            <ul className="list-disc pl-4 space-y-1 text-navy-400">
-              {topRec?.reasons.map((r, i) => (
-                <li key={i}>{r}</li>
-              ))}
+            <span className="font-bold text-white">Why check this camera first?</span>
+            <ul className="list-disc pl-4 space-y-1.5 text-navy-300">
+              <li>It covers the exact 13-minute missing timeline gap (10:18 AM to 10:31 AM).</li>
+              <li>It proves whether Rahul boarded Bus #12 or stayed on foot.</li>
+              <li>Camera quality is high (1080p, clear lighting).</li>
             </ul>
           </div>
 
@@ -65,7 +65,7 @@ export default function NextBestEvidencePage() {
           <div className="pt-2 flex items-center justify-between">
             {cctv014Investigated ? (
               <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
-                <CheckCircle2 size={16} /> EVIDENCE ACQUIRED & INTEGRATED
+                <CheckCircle2 size={16} /> CCTV-014 CHECKED & ADDED TO CASE
               </span>
             ) : (
               <button
@@ -75,15 +75,15 @@ export default function NextBestEvidencePage() {
               >
                 {isInvestigating ? (
                   <span className="flex items-center gap-2">
-                    <Activity className="w-4 h-4 animate-spin" /> Fetching CCTV-014 Footage...
+                    <Activity className="w-4 h-4 animate-spin" /> Retrieving CCTV-014 Footage...
                   </span>
                 ) : (
-                  '[ INVESTIGATE THIS EVIDENCE ]'
+                  '📹 CHECK CCTV-014 FOOTAGE NOW'
                 )}
               </button>
             )}
 
-            <span className="text-xs text-navy-500 font-mono">Evidence ID: EVD-019</span>
+            <span className="text-xs text-navy-500 font-mono">Clue ID: EVD-019</span>
           </div>
 
           <AnimatePresence>
@@ -94,7 +94,7 @@ export default function NextBestEvidencePage() {
                 exit={{ opacity: 0 }}
                 className="p-3 bg-emerald-500/10 border border-emerald-500/30 rounded text-xs text-emerald-400 flex items-center justify-between"
               >
-                <span>✓ CCTV-014 footage processed. Overall case certainty increased from <strong>61% → 84%</strong>!</span>
+                <span>✓ CCTV-014 footage processed! Case confidence increased from <strong>61% to 84%</strong>!</span>
                 <button onClick={() => setShowSuccess(false)} className="underline text-emerald-300">Dismiss</button>
               </motion.div>
             )}
@@ -104,17 +104,17 @@ export default function NextBestEvidencePage() {
         {/* Evidence Value Score breakdown */}
         <div className="glass-card p-6 flex flex-col justify-between">
           <div>
-            <h3 className="text-xs font-bold text-white uppercase tracking-wider mb-4 pb-2 border-b border-navy-800">Information Value Score</h3>
+            <h3 className="text-xs font-bold text-white uppercase tracking-wider mb-4 pb-2 border-b border-navy-800">AI Score Breakdown</h3>
 
             <div className="text-center py-3">
               <span className="text-4xl font-bold text-blue-400 font-mono">{topRec?.evidenceValueScore || 92}%</span>
-              <p className="text-xs text-navy-400 mt-1">High information density score</p>
+              <p className="text-xs text-navy-400 mt-1">Overall usefulness score</p>
             </div>
 
             <div className="space-y-3 mt-4 text-xs">
               <div>
-                <div className="flex justify-between text-navy-400 mb-1">
-                  <span>Location Relevance</span>
+                <div className="flex justify-between text-navy-300 mb-1">
+                  <span>Spot Relevance</span>
                   <span className="text-white font-mono">{topRec?.locationRelevance || 94}%</span>
                 </div>
                 <div className="certainty-bar h-1">
@@ -123,8 +123,8 @@ export default function NextBestEvidencePage() {
               </div>
 
               <div>
-                <div className="flex justify-between text-navy-400 mb-1">
-                  <span>Temporal Relevance</span>
+                <div className="flex justify-between text-navy-300 mb-1">
+                  <span>Time Fit</span>
                   <span className="text-white font-mono">{topRec?.temporalRelevance || 91}%</span>
                 </div>
                 <div className="certainty-bar h-1">
@@ -133,8 +133,8 @@ export default function NextBestEvidencePage() {
               </div>
 
               <div>
-                <div className="flex justify-between text-navy-400 mb-1">
-                  <span>Source Reliability</span>
+                <div className="flex justify-between text-navy-300 mb-1">
+                  <span>Camera Trustworthiness</span>
                   <span className="text-white font-mono">{topRec?.sourceReliability || 88}%</span>
                 </div>
                 <div className="certainty-bar h-1">
@@ -144,8 +144,8 @@ export default function NextBestEvidencePage() {
             </div>
           </div>
 
-          <div className="text-[11px] text-navy-500 pt-3 border-t border-navy-800 italic">
-            Score evaluated based on hypothesis distinction and spatial density.
+          <div className="text-[11px] text-navy-400 pt-3 border-t border-navy-800">
+            Higher scores mean checking this clue will solve the case much faster.
           </div>
         </div>
       </div>

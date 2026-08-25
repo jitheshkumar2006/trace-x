@@ -68,11 +68,11 @@ export default function SearchPriorityMapPage() {
       <div className="flex justify-between items-start">
         <div>
           <h1 className="text-2xl font-bold text-white flex items-center gap-3">
-            <MapPin className="text-accent-blue" />
-            Search Priority Map
+            <MapPin className="text-blue-400" />
+            Search Area Priority Map
           </h1>
-          <p className="text-navy-400 text-sm mt-1">
-            Candidate search priorities based on evidence graph analysis and geospatial probability
+          <p className="text-navy-400 text-xs mt-1">
+            Ground search zones prioritized by time, distance, and verified evidence
           </p>
         </div>
         <div className="flex items-center gap-2">

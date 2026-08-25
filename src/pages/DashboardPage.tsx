@@ -59,20 +59,35 @@ export default function DashboardPage() {
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-navy-800 pb-4">
         <div>
-          <h1 className="text-2xl font-bold text-white tracking-tight">Dashboard Overview</h1>
-          <p className="text-xs text-navy-400 mt-0.5">Case ID: <span className="font-mono text-blue-400 font-semibold">{activeCase?.id || 'TRX-2026-001'}</span> • Subject: <span className="text-white font-semibold">{activeCase?.person.name}</span></p>
+          <h1 className="text-2xl font-bold text-white tracking-tight">Case Summary Dashboard</h1>
+          <p className="text-xs text-navy-400 mt-0.5">Case ID: <span className="font-mono text-blue-400 font-semibold">{activeCase?.id || 'TRX-2026-001'}</span> • Person: <span className="text-white font-semibold">{activeCase?.person.name}</span></p>
         </div>
 
         <div className="flex items-center gap-3">
           {cctv014Investigated && (
-            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-              <CheckCircle2 size={13} />
-              CCTV-014 Investigated
+            <span className="inline-flex items-center gap-1 px-3 py-1 rounded text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+              <CheckCircle2 size={14} />
+              CCTV-014 Added to Case
             </span>
           )}
           <span className="prototype-badge">
-            Certainty: {activeCase?.certainty.overall}%
+            Overall Confidence: {activeCase?.certainty.overall}%
           </span>
+        </div>
+      </div>
+
+      {/* Easy Explainer Banner */}
+      <div className="bg-blue-950/40 border border-blue-500/30 p-4 rounded-lg flex items-start gap-3">
+        <Activity className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
+        <div className="text-xs space-y-1">
+          <p className="text-white font-semibold">What is happening in this case?</p>
+          <p className="text-navy-300">
+            {cctv014Investigated ? (
+              <>We successfully checked <strong>CCTV-014 at the bus stand</strong>. The 13-minute gap is resolved, and overall case confidence jumped from <strong>61% to 84%</strong>.</>
+            ) : (
+              <>We know Rahul Sharma was at the <strong>Central Market at 10:18 AM</strong>. However, there is a <strong>13-minute missing gap</strong> before he appears at 10:31 AM. The AI recommends checking <strong>CCTV Camera 014</strong> next.</>
+            )}
+          </p>
         </div>
       </div>
 
@@ -85,31 +100,31 @@ export default function DashboardPage() {
           </div>
           <div className="text-2xl font-bold text-white">{stats.activeCasesCount}</div>
           <div className="text-[11px] text-navy-400 mt-1 flex items-center gap-1">
-            <TrendingUp className="w-3 h-3 text-emerald-400" /> High priority active
+            <TrendingUp className="w-3 h-3 text-emerald-400" /> Active investigation
           </div>
         </div>
 
         <div className="glass-card p-4">
           <div className="flex justify-between items-center text-xs text-navy-400 mb-2">
-            <span>Evidence Items</span>
+            <span>Clues Collected</span>
             <FileText className="w-4 h-4 text-emerald-400" />
           </div>
           <div className="text-2xl font-bold text-white">{stats.newEvidenceCount}</div>
-          <div className="text-[11px] text-emerald-400 mt-1">+{cctv014Investigated ? '6' : '5'} registered</div>
+          <div className="text-[11px] text-emerald-400 mt-1">+{cctv014Investigated ? '6' : '5'} total clues</div>
         </div>
 
         <div className="glass-card p-4">
           <div className="flex justify-between items-center text-xs text-navy-400 mb-2">
-            <span>Priority Leads</span>
+            <span>Leads to Verify</span>
             <Activity className="w-4 h-4 text-amber-400" />
           </div>
           <div className="text-2xl font-bold text-white">{stats.highPriorityLeadsCount}</div>
-          <div className="text-[11px] text-amber-400 mt-1">Verification required</div>
+          <div className="text-[11px] text-amber-400 mt-1">Needs police review</div>
         </div>
 
         <div className="glass-card p-4">
           <div className="flex justify-between items-center text-xs text-navy-400 mb-2">
-            <span>Critical Gaps</span>
+            <span>Missing Time Gaps</span>
             <AlertTriangle className="w-4 h-4 text-red-400" />
           </div>
           <div className="text-2xl font-bold text-white">{stats.unresolvedGapsCount}</div>
@@ -118,11 +133,11 @@ export default function DashboardPage() {
 
         <div className="glass-card p-4">
           <div className="flex justify-between items-center text-xs text-navy-400 mb-2">
-            <span>Overall Certainty</span>
+            <span>Case Confidence</span>
             <Search className="w-4 h-4 text-indigo-400" />
           </div>
           <div className="text-2xl font-bold text-white">{stats.avgCertainty}%</div>
-          <div className="text-[11px] text-indigo-400 mt-1">{cctv014Investigated ? 'Up from 61%' : 'Baseline score'}</div>
+          <div className="text-[11px] text-indigo-400 mt-1">{cctv014Investigated ? 'Up from 61%' : 'Based on 5 clues'}</div>
         </div>
       </div>
 
@@ -132,34 +147,47 @@ export default function DashboardPage() {
         <div className="lg:col-span-2 glass-card p-5">
           <div className="flex justify-between items-center mb-5 pb-3 border-b border-navy-800">
             <div>
-              <h2 className="text-sm font-bold text-white uppercase tracking-wider">Evidence Certainty Profile</h2>
-              <p className="text-xs text-navy-400">Dimension breakdown for active investigation</p>
+              <h2 className="text-sm font-bold text-white uppercase tracking-wider">How Sure Are We About Each Detail?</h2>
+              <p className="text-xs text-navy-400">Confidence scores for person, time, place, and route</p>
             </div>
-            <span className="text-xl font-bold text-blue-400 font-mono">{activeCase?.certainty.overall}%</span>
+            <span className="text-xl font-bold text-blue-400 font-mono">{activeCase?.certainty.overall}% overall</span>
           </div>
 
           <div className="space-y-3.5">
-            {certaintyData?.map((item) => (
-              <div key={item.key} className="space-y-1">
-                <div className="flex justify-between text-xs">
-                  <span className="text-navy-300 font-medium">{item.key}</span>
-                  <span className="text-white font-mono font-semibold">{item.value}%</span>
+            {certaintyData?.map((item) => {
+              const explainers: Record<string, string> = {
+                Identity: 'Are we sure it is Rahul Sharma?',
+                Time: 'Do we know exact timestamps?',
+                Location: 'Do we know the exact spot?',
+                Route: 'Do we know which road he walked?',
+                'CCTV Coverage': 'Do we have video footage?',
+                Witness: 'Do we have eyewitness sightings?',
+              };
+
+              return (
+                <div key={item.key} className="space-y-1">
+                  <div className="flex justify-between text-xs">
+                    <span className="text-navy-200 font-medium">
+                      {item.key} <span className="text-[11px] text-navy-400 font-normal">({explainers[item.key]})</span>
+                    </span>
+                    <span className="text-white font-mono font-semibold">{item.value}%</span>
+                  </div>
+                  <div className="certainty-bar">
+                    <div
+                      className={`certainty-bar-fill ${getCertaintyColor(item.value)}`}
+                      style={{ width: `${item.value}%` }}
+                    />
+                  </div>
                 </div>
-                <div className="certainty-bar">
-                  <div
-                    className={`certainty-bar-fill ${getCertaintyColor(item.value)}`}
-                    style={{ width: `${item.value}%` }}
-                  />
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
 
         {/* Active Subject Summary */}
         <div className="glass-card p-5 flex flex-col justify-between">
           <div>
-            <h2 className="text-sm font-bold text-white uppercase tracking-wider mb-4 pb-2 border-b border-navy-800">Active Subject File</h2>
+            <h2 className="text-sm font-bold text-white uppercase tracking-wider mb-4 pb-2 border-b border-navy-800">Missing Person Details</h2>
 
             <div className="space-y-3">
               <div className="flex items-center gap-3">
@@ -168,26 +196,26 @@ export default function DashboardPage() {
                 </div>
                 <div>
                   <h3 className="font-bold text-white text-base">{activeCase?.person.name}</h3>
-                  <p className="text-xs text-navy-400">{activeCase?.person.age} yrs • {activeCase?.person.gender} • <span className="capitalize text-blue-400 font-medium">{activeCase?.person.category}</span></p>
+                  <p className="text-xs text-navy-400">{activeCase?.person.age} years old • {activeCase?.person.gender} • <span className="capitalize text-blue-400 font-medium">{activeCase?.person.category}</span></p>
                 </div>
               </div>
 
               <div className="bg-navy-900/60 p-3 rounded border border-navy-800 text-xs space-y-1.5">
                 <div className="flex justify-between">
-                  <span className="text-navy-400">Last Known:</span>
+                  <span className="text-navy-400">Last Seen At:</span>
                   <span className="text-navy-200 font-medium">{activeCase?.person.lastKnownLocation}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-navy-400">Timestamp:</span>
-                  <span className="text-navy-200 font-mono">{new Date(activeCase?.person.lastKnownDateTime || '').toLocaleTimeString()}</span>
+                  <span className="text-navy-400">Time Last Seen:</span>
+                  <span className="text-navy-200 font-mono">10:18 AM</span>
                 </div>
               </div>
             </div>
           </div>
 
           <div className="pt-4 mt-4 border-t border-navy-800 flex justify-between items-center text-xs text-navy-400">
-            <span>Status: <span className="text-emerald-400 font-semibold uppercase">{activeCase?.status}</span></span>
-            <span className="font-mono"><Clock className="w-3 h-3 inline mr-1 text-blue-400" />{new Date(activeCase?.updatedAt || '').toLocaleTimeString()}</span>
+            <span>Case Status: <span className="text-emerald-400 font-semibold uppercase">{activeCase?.status}</span></span>
+            <span className="font-mono"><Clock className="w-3 h-3 inline mr-1 text-blue-400" />Active</span>
           </div>
         </div>
       </div>
@@ -196,15 +224,16 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Competing Hypotheses */}
         <div className="glass-card p-5">
-          <h2 className="text-sm font-bold text-white uppercase tracking-wider mb-4 pb-2 border-b border-navy-800">Competing Movement Hypotheses</h2>
+          <h2 className="text-sm font-bold text-white uppercase tracking-wider mb-1">Most Likely Scenarios</h2>
+          <p className="text-xs text-navy-400 mb-4 pb-2 border-b border-navy-800">What the AI thinks could have happened, ordered by likelihood</p>
           <div className="space-y-3">
             {hypotheses.slice(0, 3).map((hypothesis) => (
               <div key={hypothesis.id} className="bg-navy-900/50 p-3 rounded border border-navy-800 space-y-1.5">
                 <div className="flex justify-between items-center">
                   <span className="text-xs font-bold text-white">{hypothesis.name}</span>
-                  <span className="text-xs font-mono font-bold text-blue-400">{hypothesis.confidence}%</span>
+                  <span className="text-xs font-mono font-bold text-blue-400">{hypothesis.confidence}% Chance</span>
                 </div>
-                <p className="text-xs text-navy-400">{hypothesis.description}</p>
+                <p className="text-xs text-navy-300">{hypothesis.description}</p>
                 <div className="certainty-bar h-1">
                   <div className="certainty-bar-fill bg-blue-500" style={{ width: `${hypothesis.confidence}%` }} />
                 </div>
@@ -215,7 +244,8 @@ export default function DashboardPage() {
 
         {/* System Activity */}
         <div className="glass-card p-5">
-          <h2 className="text-sm font-bold text-white uppercase tracking-wider mb-4 pb-2 border-b border-navy-800">Audit Trail Activity</h2>
+          <h2 className="text-sm font-bold text-white uppercase tracking-wider mb-1">Recent Activity Log</h2>
+          <p className="text-xs text-navy-400 mb-4 pb-2 border-b border-navy-800">Actions taken by officers and system automated analysis</p>
           <div className="space-y-2 text-xs">
             {auditLog.slice(0, 4).map((log) => (
               <div key={log.id} className="flex gap-3 bg-navy-900/50 p-2.5 rounded border border-navy-800">
@@ -226,6 +256,7 @@ export default function DashboardPage() {
           </div>
         </div>
       </div>
+    </div>
     </div>
   );
 }

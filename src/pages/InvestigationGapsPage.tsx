@@ -36,9 +36,9 @@ export default function InvestigationGapsPage() {
         </div>
         <div>
           <h1 className="text-3xl font-bold font-sans tracking-tight text-white flex items-center gap-2">
-            WHAT DON'T WE KNOW?
+            What Don't We Know Yet?
           </h1>
-          <p className="text-navy-400 text-lg">Investigation Uncertainty & Missing Evidence Analysis</p>
+          <p className="text-navy-400 text-base">Missing timeline periods, unverified locations, and clues we need to collect</p>
         </div>
       </div>
 
@@ -51,29 +51,29 @@ export default function InvestigationGapsPage() {
                 <AlertTriangle className="w-32 h-32 text-amber-400" />
               </div>
               <div className="relative z-10 space-y-4">
-                <div className="flex items-center gap-2 text-amber-400 font-bold text-xl mb-4">
+                <div className="flex items-center gap-2 text-amber-400 font-bold text-xl mb-2">
                   <AlertCircle className="w-6 h-6" />
-                  ⚠ INVESTIGATION UNCERTAINTY
+                  ⚠️ CRITICAL MISSING TIMELINE GAP
                 </div>
 
-                <p className="text-white text-lg">
-                  The system cannot reliably determine the subject's movement between:
+                <p className="text-white text-base">
+                  We have no verified footage or sightings of Rahul Sharma during this 13-minute window:
                 </p>
 
                 <div className="flex items-center gap-4 bg-black/40 p-4 rounded-lg font-mono text-xl border border-white/5">
-                  <div className="text-white/80">{criticalGap.timeStart ? new Date(criticalGap.timeStart).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '10:18 AM'}</div>
+                  <div className="text-white/80">10:18 AM <span className="text-xs font-sans text-navy-400">(Central Market)</span></div>
                   <ChevronRight className="w-6 h-6 text-white/40" />
-                  <div className="text-white/80">{criticalGap.timeEnd ? new Date(criticalGap.timeEnd).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '10:31 AM'}</div>
+                  <div className="text-white/80">10:31 AM <span className="text-xs font-sans text-navy-400">(Metro Gate B)</span></div>
                 </div>
 
-                <div className="flex items-center gap-4 mt-6">
-                  <span className="text-navy-400 uppercase text-sm tracking-wider font-semibold">Current uncertainty</span>
+                <div className="flex items-center gap-4 mt-4">
+                  <span className="text-navy-300 uppercase text-xs tracking-wider font-semibold">Uncertainty Level:</span>
                   <motion.div
                     animate={{ opacity: [1, 0.5, 1] }}
                     transition={{ repeat: Infinity, duration: 2 }}
-                    className="text-4xl font-bold text-amber-400 font-mono"
+                    className="text-3xl font-bold text-amber-400 font-mono"
                   >
-                    {cctv014Investigated ? '28%' : `${criticalGap.uncertainty}%`}
+                    {cctv014Investigated ? '28% (Resolved)' : `${criticalGap.uncertainty}% (High)`}
                   </motion.div>
                 </div>
               </div>
@@ -81,20 +81,20 @@ export default function InvestigationGapsPage() {
           )}
 
           <motion.div variants={itemVariants} className="space-y-4">
-            <h2 className="text-xl font-bold flex items-center gap-2 text-white/90">
+            <h2 className="text-lg font-bold flex items-center gap-2 text-white/90">
               <Search className="w-5 h-5 text-accent-blue" />
-              Missing Evidence Requirements
+              What Clues Do Officers Need to Collect?
             </h2>
 
             <div className="grid gap-4">
               {criticalGap?.missingEvidence.map((evidence, idx) => (
-                <div key={idx} className="glass-card-light p-4 flex items-start gap-4 border-l-4 border-l-red-500">
+                <div key={idx} className="glass-card-light p-4 flex items-start gap-4 border-l-4 border-l-amber-500">
                   <div className="w-8 h-8 rounded-full bg-navy-900 flex items-center justify-center font-mono text-blue-400 font-bold shrink-0">
                     {idx + 1}
                   </div>
                   <div>
-                    <h4 className="font-medium text-white/90">{evidence}</h4>
-                    <p className="text-navy-400 text-xs mt-1">Required to resolve the time-location transition gap and reduce uncertainty.</p>
+                    <h4 className="font-semibold text-white">{evidence}</h4>
+                    <p className="text-navy-300 text-xs mt-1">Collecting this clue will solve the 13-minute missing timeline gap.</p>
                   </div>
                 </div>
               ))}
@@ -102,25 +102,25 @@ export default function InvestigationGapsPage() {
           </motion.div>
 
           <motion.div variants={itemVariants} className="glass-card p-6">
-            <h3 className="text-lg font-semibold mb-6 text-white">Uncertainty Timeline</h3>
+            <h3 className="text-base font-semibold mb-6 text-white">Timeline of Known Points & Missing Gap</h3>
             <div className="relative h-20 flex items-center">
               <div className="absolute left-0 right-0 h-1 bg-white/10 top-1/2 -translate-y-1/2"></div>
 
-              <div className="absolute left-[10%] top-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)] z-10" title="Known Point A"></div>
-              <div className="absolute left-[10%] top-[calc(50%+16px)] text-xs text-navy-400 font-mono -translate-x-1/2">10:18 AM</div>
+              <div className="absolute left-[10%] top-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)] z-10" title="Market"></div>
+              <div className="absolute left-[10%] top-[calc(50%+16px)] text-xs text-navy-300 font-mono -translate-x-1/2">10:18 AM</div>
 
               <div className="absolute left-[10%] right-[60%] h-1 bg-emerald-500 top-1/2 -translate-y-1/2"></div>
 
-              <div className="absolute left-[60%] top-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)] z-10" title="Known Point B"></div>
-              <div className="absolute left-[60%] top-[calc(50%+16px)] text-xs text-navy-400 font-mono -translate-x-1/2">10:31 AM</div>
+              <div className="absolute left-[60%] top-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)] z-10" title="Metro Gate"></div>
+              <div className="absolute left-[60%] top-[calc(50%+16px)] text-xs text-navy-300 font-mono -translate-x-1/2">10:31 AM</div>
 
               <div className="absolute left-[60%] right-[90%] h-1 bg-emerald-500 top-1/2 -translate-y-1/2"></div>
 
-              <div className="absolute left-[90%] top-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)] z-10" title="Known Point C"></div>
-              <div className="absolute left-[90%] top-[calc(50%+16px)] text-xs text-navy-400 font-mono -translate-x-1/2">10:45 AM</div>
+              <div className="absolute left-[90%] top-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)] z-10" title="Bus Stand"></div>
+              <div className="absolute left-[90%] top-[calc(50%+16px)] text-xs text-navy-300 font-mono -translate-x-1/2">10:45 AM</div>
 
               <div className="absolute left-[20%] right-[50%] h-4 top-1/2 -translate-y-1/2 rounded bg-amber-500/20 border border-amber-500/50 border-dashed z-0 flex items-center justify-center">
-                <span className="text-xs text-amber-400 font-bold bg-[#0f172a] px-2 rounded-full absolute -top-3">CRITICAL GAP</span>
+                <span className="text-xs text-amber-400 font-bold bg-[#0f172a] px-2 rounded-full absolute -top-3">13-MIN GAP</span>
               </div>
             </div>
           </motion.div>
@@ -128,55 +128,54 @@ export default function InvestigationGapsPage() {
 
         <div className="space-y-6">
           <motion.div variants={itemVariants} className="glass-card border-indigo-500/30 bg-indigo-500/5 p-6 space-y-4">
-            <h2 className="text-xl font-bold flex items-center gap-2 text-indigo-400">
+            <h2 className="text-lg font-bold flex items-center gap-2 text-indigo-400">
               <SearchX className="w-5 h-5" />
-              NEGATIVE EVIDENCE
+              Missing Clue Analysis
             </h2>
 
-            <div className="space-y-4 text-sm">
+            <div className="space-y-4 text-xs">
               <div className="bg-black/30 p-3 rounded border border-white/5 space-y-2 font-mono">
                 <div className="flex items-center justify-between">
-                  <span className="text-navy-400">Expected:</span>
+                  <span className="text-navy-400">Expected path:</span>
                   <span className="text-navy-200">CCTV-007 → CCTV-009</span>
                 </div>
                 <div className="flex items-center justify-between text-amber-400">
-                  <span>Observed:</span>
+                  <span>Actual camera record:</span>
                   <span>CCTV-007 → ? → CCTV-009</span>
                 </div>
               </div>
 
               <div>
-                <p className="text-navy-300 font-medium mb-2 flex items-center gap-1"><HelpCircle className="w-4 h-4 text-indigo-400" /> Possible explanations:</p>
-                <ul className="space-y-2 text-navy-400 text-xs">
-                  <li className="flex gap-2"><span className="text-indigo-400 font-bold">1.</span> Alternate route avoiding main cameras</li>
-                  <li className="flex gap-2"><span className="text-indigo-400 font-bold">2.</span> Known CCTV coverage gap on 4th Street</li>
-                  <li className="flex gap-2"><span className="text-indigo-400 font-bold">3.</span> Vehicle/transport transition (entered car/bus)</li>
-                  <li className="flex gap-2"><span className="text-indigo-400 font-bold">4.</span> Occlusion by large crowds/vehicles</li>
-                  <li className="flex gap-2"><span className="text-indigo-400 font-bold">5.</span> Previous lead match may be incorrect</li>
+                <p className="text-navy-200 font-semibold mb-2 flex items-center gap-1"><HelpCircle className="w-4 h-4 text-indigo-400" /> Possible reasons why he was not captured:</p>
+                <ul className="space-y-2 text-navy-300 text-xs">
+                  <li className="flex gap-2"><span className="text-indigo-400 font-bold">1.</span> Walked on an alternate side street</li>
+                  <li className="flex gap-2"><span className="text-indigo-400 font-bold">2.</span> Camera had a blind spot on 4th Street</li>
+                  <li className="flex gap-2"><span className="text-indigo-400 font-bold">3.</span> Boarded a bus or auto rickshaw</li>
+                  <li className="flex gap-2"><span className="text-indigo-400 font-bold">4.</span> Hidden behind a large vehicle or crowd</li>
                 </ul>
               </div>
 
-              <div className="text-xs text-navy-400 italic bg-black/20 p-2 rounded mt-4 border border-navy-700/40">
-                Note: System does not automatically determine which explanation is correct. Human verification required.
+              <div className="text-[11px] text-navy-400 italic bg-black/20 p-2.5 rounded mt-4 border border-navy-700/40">
+                Note: Officers must manually confirm which reason is true.
               </div>
             </div>
           </motion.div>
 
           <motion.div variants={itemVariants} className="space-y-4">
-            <h3 className="font-semibold text-white/80">All Identified Gaps</h3>
+            <h3 className="font-semibold text-white">All Identified Case Gaps</h3>
             <div className="space-y-3">
               {sortedGaps.map((gap) => (
                 <div key={gap.id} className="glass-card-light p-4 space-y-2 border-l-2" style={{ borderLeftColor: gap.priority === 'critical' ? 'var(--color-status-danger)' : gap.priority === 'high' ? 'var(--color-status-warning)' : 'var(--color-accent-blue)' }}>
                   <div className="flex justify-between items-start">
-                    <span className="font-medium text-white/90 text-sm">{gap.description}</span>
-                    <span className={`text-xs px-2 py-0.5 rounded font-medium capitalize ${
+                    <span className="font-medium text-white text-xs">{gap.description}</span>
+                    <span className={`text-[10px] px-2 py-0.5 rounded font-medium capitalize ${
                       gap.priority === 'critical' ? 'bg-red-500/20 text-red-400 border border-red-500/30' :
                       gap.priority === 'high' ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30' :
                       'bg-blue-500/20 text-blue-400 border border-blue-500/30'
                     }`}>{gap.priority}</span>
                   </div>
-                  <div className="flex items-center gap-4 text-xs text-navy-400 font-mono">
-                    <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> {gap.timeStart ? new Date(gap.timeStart).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '--'} - {gap.timeEnd ? new Date(gap.timeEnd).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '--'}</span>
+                  <div className="flex items-center gap-4 text-xs text-navy-300 font-mono">
+                    <span className="flex items-center gap-1"><Clock className="w-3 h-3 text-blue-400" /> {gap.timeStart ? new Date(gap.timeStart).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '10:18 AM'} - {gap.timeEnd ? new Date(gap.timeEnd).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '10:31 AM'}</span>
                     <span>Uncertainty: {cctv014Investigated && gap.id === 'GAP-001' ? '28%' : `${gap.uncertainty}%`}</span>
                   </div>
                 </div>

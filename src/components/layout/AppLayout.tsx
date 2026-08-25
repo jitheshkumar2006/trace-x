@@ -23,19 +23,34 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-const navItems = [
-  { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { path: '/cases', label: 'Active Cases', icon: FolderOpen },
-  { path: '/cases/create', label: 'Create Case', icon: FilePlus },
-  { path: '/evidence', label: 'Evidence Inbox', icon: Inbox },
-  { path: '/graph', label: 'Evidence Graph', icon: GitBranch },
-  { path: '/gaps', label: 'Investigation Gaps', icon: AlertTriangle },
-  { path: '/next-evidence', label: 'Next Best Evidence', icon: Crosshair },
-  { path: '/map', label: 'Search Priority Map', icon: Map },
-  { path: '/citizen-reports', label: 'Citizen Reports', icon: Users },
-  { path: '/audit', label: 'Audit Log', icon: FileText },
-  { path: '/privacy', label: 'Privacy & Access', icon: Shield },
-  { path: '/settings', label: 'Settings', icon: Settings },
+const navGroups = [
+  {
+    title: 'MAIN',
+    items: [
+      { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+      { path: '/cases', label: 'Active Cases', icon: FolderOpen },
+      { path: '/cases/create', label: 'Create New Case', icon: FilePlus },
+    ],
+  },
+  {
+    title: 'INTELLIGENCE & AI',
+    items: [
+      { path: '/evidence', label: 'Clues & Evidence', icon: Inbox },
+      { path: '/graph', label: 'Visual Evidence Map', icon: GitBranch },
+      { path: '/gaps', label: 'Missing Info (Gaps)', icon: AlertTriangle },
+      { path: '/next-evidence', label: 'Top Recommended Action', icon: Crosshair },
+      { path: '/map', label: 'Search Area Map', icon: Map },
+    ],
+  },
+  {
+    title: 'COMMUNITY & SYSTEM',
+    items: [
+      { path: '/citizen-reports', label: 'Public Sightings', icon: Users },
+      { path: '/audit', label: 'Audit Log', icon: FileText },
+      { path: '/privacy', label: 'Privacy & Security', icon: Shield },
+      { path: '/settings', label: 'Settings', icon: Settings },
+    ],
+  },
 ];
 
 const roleLabels: Record<string, string> = {
@@ -89,23 +104,32 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         </div>
 
         {/* Navigation Links */}
-        <nav className="flex-1 py-3 px-2 space-y-0.5 overflow-y-auto">
-          {navItems.map((item) => {
-            const Icon = item.icon;
-            return (
-              <NavLink
-                key={item.path}
-                to={item.path}
-                className={({ isActive }) =>
-                  `sidebar-item ${isActive ? 'active' : ''}`
-                }
-                title={item.label}
-              >
-                <Icon className="w-4 h-4 flex-shrink-0" />
-                {!sidebarCollapsed && <span>{item.label}</span>}
-              </NavLink>
-            );
-          })}
+        <nav className="flex-1 py-3 px-2 space-y-4 overflow-y-auto">
+          {navGroups.map((group) => (
+            <div key={group.title} className="space-y-1">
+              {!sidebarCollapsed && (
+                <div className="px-3 text-[10px] font-bold uppercase tracking-wider text-navy-400">
+                  {group.title}
+                </div>
+              )}
+              {group.items.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <NavLink
+                    key={item.path}
+                    to={item.path}
+                    className={({ isActive }) =>
+                      `sidebar-item ${isActive ? 'active' : ''}`
+                    }
+                    title={item.label}
+                  >
+                    <Icon className="w-4 h-4 flex-shrink-0 text-navy-300" />
+                    {!sidebarCollapsed && <span className="text-xs">{item.label}</span>}
+                  </NavLink>
+                );
+              })}
+            </div>
+          ))}
         </nav>
 
         {/* User Account Bar */}

@@ -65,11 +65,11 @@ export default function EvidenceGraphPage() {
       <div className="flex justify-between items-start">
         <div>
           <h1 className="text-2xl font-bold text-white flex items-center gap-3">
-            <Share2 className="text-accent-blue" />
-            Evidence Graph Matrix
+            <Share2 className="text-blue-400" />
+            Visual Clue Connection Map
           </h1>
-          <p className="text-navy-400 text-sm mt-1">
-            Visual multi-hypothesis network graph connecting locations, CCTV, reports, and temporal transitions
+          <p className="text-navy-400 text-xs mt-1">
+            See how cameras, sightings, and missing timeline gaps connect together in real time
           </p>
         </div>
         <div className="flex items-center gap-2">
