@@ -53,20 +53,14 @@ const SettingsPage: React.FC = () => {
   };
 
   return (
-    <div className="p-6 max-w-6xl mx-auto space-y-6">
-      <motion.div 
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="flex items-center gap-3 mb-8"
-      >
-        <div className="p-3 bg-navy-800 rounded-xl border border-navy-700">
-          <Settings className="w-6 h-6 text-accent-blue" />
-        </div>
-        <div>
-          <h1 className="text-2xl font-bold text-white">Settings</h1>
-          <p className="text-slate-400">Configuration and prototype controls</p>
-        </div>
-      </motion.div>
+    <div className="max-w-6xl mx-auto space-y-6">
+      <div className="border-b border-navy-800 pb-4">
+        <h1 className="text-2xl font-bold text-white flex items-center gap-3">
+          <Settings className="w-6 h-6 text-blue-400" />
+          System Settings & Controls
+        </h1>
+        <p className="text-xs text-navy-400 mt-1">Prototype controls, state reset, and platform information</p>
+      </div>
 
       <motion.div 
         variants={containerVariants}

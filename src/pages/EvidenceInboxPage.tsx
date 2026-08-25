@@ -92,13 +92,13 @@ export default function EvidenceInboxPage() {
   }
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-8 animate-in fade-in duration-500">
-      <header>
-        <h1 className="text-3xl font-bold text-slate-100 flex items-center gap-3">
-          <FileBox className="text-accent-blue" size={32} />
-          Evidence Inbox
+    <div className="space-y-6">
+      <header className="border-b border-navy-800 pb-4">
+        <h1 className="text-2xl font-bold text-white flex items-center gap-3">
+          <FileBox className="text-blue-400" size={28} />
+          Clues & Evidence Inbox
         </h1>
-        <p className="text-slate-400 mt-2">Upload and analyze new clues for Case: {activeCase.id}</p>
+        <p className="text-xs text-navy-400 mt-1">Upload, view, and analyze clues collected for Case: <span className="font-mono text-blue-400 font-semibold">{activeCase.id}</span></p>
       </header>
 
       {/* Tabs */}

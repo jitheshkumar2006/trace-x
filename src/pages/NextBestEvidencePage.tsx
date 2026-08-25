@@ -1,13 +1,14 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Crosshair, CheckCircle2, ChevronRight, Activity } from 'lucide-react';
+import { Crosshair, CheckCircle2, Activity } from 'lucide-react';
 import { useAppStore } from '../store/useStore';
 
 export default function NextBestEvidencePage() {
-  const { recommendations, investigateCCTV014, cctv014Investigated } = useAppStore();
+  const { activeCase, recommendations, investigateCCTV014, cctv014Investigated } = useAppStore();
   const [isInvestigating, setIsInvestigating] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
 
+  const personName = activeCase?.person.name || 'the subject';
   const topRec = recommendations[0];
 
   const handleInvestigateClick = () => {
@@ -28,7 +29,7 @@ export default function NextBestEvidencePage() {
             <Crosshair className="text-blue-500 w-6 h-6" />
             Top Recommended Action
           </h1>
-          <p className="text-xs text-navy-400 mt-0.5">AI engine ranks clues by how much they help solve the case</p>
+          <p className="text-xs text-navy-400 mt-0.5">AI engine ranks clues by how much they help solve the case for <span className="text-white font-semibold">{personName}</span></p>
         </div>
 
         <span className="prototype-badge">
@@ -44,7 +45,7 @@ export default function NextBestEvidencePage() {
             <div>
               <span className="badge-very-high">🔴 HIGH PRIORITY STEP</span>
               <h2 className="text-xl font-bold text-white mt-2">Check CCTV Camera 014 (Central Bus Stand)</h2>
-              <p className="text-xs text-navy-300 mt-1">This footage will tell us if Rahul boarded a bus or walked toward the market.</p>
+              <p className="text-xs text-navy-300 mt-1">This footage will tell us if {personName} boarded a bus or walked toward the market.</p>
             </div>
             <div className="text-right">
               <span className="text-xs text-navy-400 block uppercase">Confidence Boost</span>
@@ -56,7 +57,7 @@ export default function NextBestEvidencePage() {
             <span className="font-bold text-white">Why check this camera first?</span>
             <ul className="list-disc pl-4 space-y-1.5 text-navy-300">
               <li>It covers the exact 13-minute missing timeline gap (10:18 AM to 10:31 AM).</li>
-              <li>It proves whether Rahul boarded Bus #12 or stayed on foot.</li>
+              <li>It proves whether {personName} boarded Bus #12 or stayed on foot.</li>
               <li>Camera quality is high (1080p, clear lighting).</li>
             </ul>
           </div>

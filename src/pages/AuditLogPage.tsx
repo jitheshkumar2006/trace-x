@@ -49,14 +49,17 @@ export const AuditLogPage: React.FC = () => {
   const uniqueCases = Array.from(new Set(auditLog.map(l => l.caseId).filter(Boolean)));
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-6">
-      <header className="flex items-center justify-between border-b border-navy-700 pb-4">
-        <div className="flex items-center gap-3">
-          <FileText className="w-8 h-8 text-accent-indigo" />
-          <h1 className="text-3xl font-bold text-gray-100">Audit Log</h1>
+    <div className="space-y-6">
+      <header className="flex items-center justify-between border-b border-navy-800 pb-4">
+        <div>
+          <h1 className="text-2xl font-bold text-white flex items-center gap-3">
+            <FileText className="w-6 h-6 text-blue-400" />
+            System Audit Log
+          </h1>
+          <p className="text-xs text-navy-400 mt-1">Immutable security log of all case updates, evidence uploads, and access events</p>
         </div>
-        <div className="badge-medium px-3 py-1 bg-navy-800 border border-navy-600 rounded text-sm text-gray-300">
-          {filteredLogs.length} Entries
+        <div className="prototype-badge">
+          {filteredLogs.length} Entries Logged
         </div>
       </header>
 

@@ -1,5 +1,4 @@
 import { useMemo } from 'react';
-import { motion } from 'framer-motion';
 import {
   Activity,
   AlertTriangle,
@@ -9,8 +8,11 @@ import {
   Search,
   CheckCircle2,
   TrendingUp,
+  Shield,
+  Heart,
+  Eye,
 } from 'lucide-react';
-import { useAppStore } from '../store/useStore';
+import { useAppStore, useAuthStore } from '../store/useStore';
 
 const getCertaintyColor = (value: number) => {
   if (value > 75) return 'bg-emerald-500';
@@ -21,6 +23,8 @@ const getCertaintyColor = (value: number) => {
 
 export default function DashboardPage() {
   const { cases, activeCase, evidence, gaps, hypotheses, auditLog, cctv014Investigated } = useAppStore();
+  const { currentUser } = useAuthStore();
+  const userRole = currentUser?.role || 'police';
 
   const stats = useMemo(() => {
     const activeCasesCount = cases.filter((c) => c.status === 'active').length;
@@ -54,13 +58,17 @@ export default function DashboardPage() {
     ];
   }, [activeCase]);
 
+  const personName = activeCase?.person.name || 'Rahul Sharma';
+  const currentCaseId = activeCase?.id || 'TRX-2026-001';
+  const lastLoc = activeCase?.person.lastKnownLocation || 'Central Market';
+
   return (
     <div className="space-y-6">
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-navy-800 pb-4">
         <div>
           <h1 className="text-2xl font-bold text-white tracking-tight">Case Summary Dashboard</h1>
-          <p className="text-xs text-navy-400 mt-0.5">Case ID: <span className="font-mono text-blue-400 font-semibold">{activeCase?.id || 'TRX-2026-001'}</span> • Person: <span className="text-white font-semibold">{activeCase?.person.name}</span></p>
+          <p className="text-xs text-navy-400 mt-0.5">Case ID: <span className="font-mono text-blue-400 font-semibold">{currentCaseId}</span> • Subject: <span className="text-white font-semibold">{personName}</span></p>
         </div>
 
         <div className="flex items-center gap-3">
@@ -76,20 +84,52 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Easy Explainer Banner */}
-      <div className="bg-blue-950/40 border border-blue-500/30 p-4 rounded-lg flex items-start gap-3">
-        <Activity className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
-        <div className="text-xs space-y-1">
-          <p className="text-white font-semibold">What is happening in this case?</p>
-          <p className="text-navy-300">
-            {cctv014Investigated ? (
-              <>We successfully checked <strong>CCTV-014 at the bus stand</strong>. The 13-minute gap is resolved, and overall case confidence jumped from <strong>61% to 84%</strong>.</>
-            ) : (
-              <>We know Rahul Sharma was at the <strong>Central Market at 10:18 AM</strong>. However, there is a <strong>13-minute missing gap</strong> before he appears at 10:31 AM. The AI recommends checking <strong>CCTV Camera 014</strong> next.</>
-            )}
-          </p>
+      {/* Role-Tailored Explainer Banner */}
+      {userRole === 'family' ? (
+        <div className="bg-purple-950/40 border border-purple-500/30 p-4 rounded-lg flex items-start gap-3">
+          <Heart className="w-5 h-5 text-purple-400 flex-shrink-0 mt-0.5" />
+          <div className="text-xs space-y-1">
+            <p className="text-white font-semibold">Family View Portal — Approved Case Progress Update</p>
+            <p className="text-navy-300">
+              Official update for <strong>{personName}</strong>: Police & field search teams are actively tracking last known locations near <strong>{lastLoc}</strong>. Raw CCTV footage and biometric records are protected for security.
+            </p>
+          </div>
         </div>
-      </div>
+      ) : userRole === 'volunteer' ? (
+        <div className="bg-amber-950/40 border border-amber-500/30 p-4 rounded-lg flex items-start gap-3">
+          <Eye className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" />
+          <div className="text-xs space-y-1">
+            <p className="text-white font-semibold">Field Volunteer Portal — Ground Search Active</p>
+            <p className="text-navy-300">
+              Search teams are focusing on <strong>{lastLoc} & Bus Stand Corridor</strong>. If you spot {personName}, please submit a report immediately on the <strong>Public Sightings</strong> tab.
+            </p>
+          </div>
+        </div>
+      ) : userRole === 'ngo' ? (
+        <div className="bg-emerald-950/40 border border-emerald-500/30 p-4 rounded-lg flex items-start gap-3">
+          <Shield className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" />
+          <div className="text-xs space-y-1">
+            <p className="text-white font-semibold">NGO Partner Portal — Case Oversight</p>
+            <p className="text-navy-300">
+              You are viewing assigned case <strong>{currentCaseId} ({personName})</strong>. Submit structured field reports or check citizen sighting submissions.
+            </p>
+          </div>
+        </div>
+      ) : (
+        <div className="bg-blue-950/40 border border-blue-500/30 p-4 rounded-lg flex items-start gap-3">
+          <Activity className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
+          <div className="text-xs space-y-1">
+            <p className="text-white font-semibold">Police Command View — What is happening in this case?</p>
+            <p className="text-navy-300">
+              {cctv014Investigated ? (
+                <>We successfully checked <strong>CCTV-014 at the bus stand</strong>. The 13-minute gap is resolved, and overall case confidence jumped from <strong>61% to 84%</strong>.</>
+              ) : (
+                <>We know {personName} was at <strong>{lastLoc} at 10:18 AM</strong>. However, there is a <strong>13-minute missing gap</strong> before he appears at 10:31 AM. The AI recommends checking <strong>CCTV Camera 014</strong> next.</>
+              )}
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* Metrics Row */}
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
@@ -156,7 +196,7 @@ export default function DashboardPage() {
           <div className="space-y-3.5">
             {certaintyData?.map((item) => {
               const explainers: Record<string, string> = {
-                Identity: 'Are we sure it is Rahul Sharma?',
+                Identity: `Are we sure it is ${personName}?`,
                 Time: 'Do we know exact timestamps?',
                 Location: 'Do we know the exact spot?',
                 Route: 'Do we know which road he walked?',
@@ -256,7 +296,6 @@ export default function DashboardPage() {
           </div>
         </div>
       </div>
-    </div>
     </div>
   );
 }

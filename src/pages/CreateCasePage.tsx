@@ -121,14 +121,14 @@ export const CreateCasePage: React.FC = () => {
   };
 
   return (
-    <div className="p-6 max-w-4xl mx-auto space-y-6">
-      <div className="flex justify-between items-center mb-6">
+    <div className="max-w-4xl mx-auto space-y-6">
+      <div className="flex justify-between items-center border-b border-navy-800 pb-4">
         <div>
-          <h1 className="text-3xl font-bold flex items-center gap-3 text-white">
-            <UserPlus className="w-8 h-8 text-accent-blue" />
+          <h1 className="text-2xl font-bold flex items-center gap-3 text-white">
+            <UserPlus className="w-6 h-6 text-blue-400" />
             Create Missing Person Case
           </h1>
-          <p className="text-navy-400 mt-1">Register a new case into TRACE-X intelligence database</p>
+          <p className="text-xs text-navy-400 mt-1">Register a new case into TRACE-X intelligence database</p>
         </div>
       </div>
 
@@ -358,12 +358,12 @@ export const CreateCasePage: React.FC = () => {
               </div>
             </div>
 
-            <div className="flex justify-end pt-2">
+            <div className="flex justify-end gap-3 pt-2">
               <button
-                onClick={() => navigate('/cases')}
+                onClick={() => navigate('/dashboard')}
                 className="btn-primary text-xs"
               >
-                View Case File <ChevronRight className="w-4 h-4" />
+                📊 Open Live Dashboard For This Person <ChevronRight className="w-4 h-4" />
               </button>
             </div>
           </motion.div>

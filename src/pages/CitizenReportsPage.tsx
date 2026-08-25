@@ -18,10 +18,13 @@ export const CitizenReportsPage: React.FC = () => {
   };
 
   return (
-    <div className="p-6 max-w-5xl mx-auto space-y-8">
-      <header className="flex items-center gap-3 border-b border-navy-700 pb-4">
-        <Users className="w-8 h-8 text-accent-blue" />
-        <h1 className="text-3xl font-bold text-gray-100">Report a Sighting</h1>
+    <div className="max-w-5xl mx-auto space-y-6">
+      <header className="border-b border-navy-800 pb-4">
+        <h1 className="text-2xl font-bold text-white flex items-center gap-3">
+          <Users className="w-6 h-6 text-blue-400" />
+          Public Sightings Portal
+        </h1>
+        <p className="text-xs text-navy-400 mt-1">Submit sighting reports securely from citizens and volunteers</p>
       </header>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">

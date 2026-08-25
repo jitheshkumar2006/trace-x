@@ -17,10 +17,13 @@ export const PrivacyPage: React.FC = () => {
   };
 
   return (
-    <div className="p-6 max-w-6xl mx-auto space-y-8">
-      <header className="flex items-center gap-3 border-b border-navy-700 pb-4">
-        <Shield className="w-8 h-8 text-status-success" />
-        <h1 className="text-3xl font-bold text-gray-100">Privacy & Access Control</h1>
+    <div className="max-w-6xl mx-auto space-y-6">
+      <header className="border-b border-navy-800 pb-4">
+        <h1 className="text-2xl font-bold text-white flex items-center gap-3">
+          <Shield className="w-6 h-6 text-emerald-400" />
+          Privacy & Security Architecture
+        </h1>
+        <p className="text-xs text-navy-400 mt-1">Role-based access control, end-to-end encryption, and human verification safeguards</p>
       </header>
 
       <div className="mb-6 p-4 bg-status-warning/10 border border-status-warning/30 rounded-lg flex gap-3 items-start">

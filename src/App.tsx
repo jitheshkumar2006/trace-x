@@ -2,7 +2,7 @@
 // TRACE-X — Main App with Routing
 // ============================================================
 
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useAuthStore } from './store/useStore';
 import LoginPage from './pages/LoginPage';
 import AppLayout from './components/layout/AppLayout';
@@ -15,6 +15,7 @@ import InvestigationGapsPage from './pages/InvestigationGapsPage';
 import NextBestEvidencePage from './pages/NextBestEvidencePage';
 import SearchPriorityMapPage from './pages/SearchPriorityMapPage';
 import CitizenReportsPage from './pages/CitizenReportsPage';
+import PublicReportPage from './pages/PublicReportPage';
 import AuditLogPage from './pages/AuditLogPage';
 import PrivacyPage from './pages/PrivacyPage';
 import SettingsPage from './pages/SettingsPage';
@@ -27,9 +28,10 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <Routes>
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/report" element={<PublicReportPage />} />
         <Route
           path="/*"
           element={
@@ -55,6 +57,6 @@ export default function App() {
           }
         />
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   );
 }

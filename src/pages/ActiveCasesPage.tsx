@@ -51,14 +51,14 @@ export const ActiveCasesPage: React.FC = () => {
   };
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-6">
-      <div className="flex justify-between items-center mb-6">
+    <div className="space-y-6">
+      <div className="flex justify-between items-center border-b border-navy-800 pb-4">
         <div>
-          <h1 className="text-3xl font-bold flex items-center gap-3 text-white">
-            <Briefcase className="w-8 h-8 text-accent-blue" />
+          <h1 className="text-2xl font-bold flex items-center gap-3 text-white">
+            <Briefcase className="w-6 h-6 text-blue-400" />
             Active Cases
           </h1>
-          <p className="text-navy-400 mt-1">Manage and monitor missing person case investigations</p>
+          <p className="text-xs text-navy-400 mt-1">Manage and monitor missing person case investigations</p>
         </div>
         <button
           onClick={() => navigate('/cases/create')}

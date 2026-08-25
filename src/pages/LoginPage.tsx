@@ -124,6 +124,21 @@ export const LoginPage: React.FC = () => {
           </button>
         </div>
 
+        {/* Public Sighting Portal Link — No Login Needed */}
+        <div className="bg-emerald-950/30 border border-emerald-500/30 rounded-lg p-4 text-center space-y-2">
+          <p className="text-xs text-emerald-300 font-semibold">
+            👁️ Are you a member of the public who spotted a missing person?
+          </p>
+          <button
+            onClick={() => navigate('/report')}
+            className="px-5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-sm font-bold transition-all shadow-lg shadow-emerald-500/20 cursor-pointer inline-flex items-center gap-2"
+          >
+            <Eye className="w-4 h-4" />
+            Submit a Sighting — No Login Needed
+          </button>
+          <p className="text-[10px] text-navy-500">100% anonymous • No account required • Your identity stays private</p>
+        </div>
+
         {/* Footer info */}
         <div className="text-xs text-navy-500 font-mono">
           Smart India Hackathon 2026 • Problem Statement PSS2

@@ -4,7 +4,8 @@ import { AlertTriangle, Clock, Search, ChevronRight, HelpCircle, AlertCircle, Se
 import { useAppStore } from '../store/useStore';
 
 export default function InvestigationGapsPage() {
-  const { gaps, cctv014Investigated } = useAppStore();
+  const { activeCase, gaps, cctv014Investigated } = useAppStore();
+  const personName = activeCase?.person.name || 'the subject';
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -29,7 +30,7 @@ export default function InvestigationGapsPage() {
   const criticalGap = sortedGaps.find(g => g.priority === 'critical') || sortedGaps[0];
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-8 pb-20">
+    <div className="space-y-6">
       <div className="flex items-center gap-4 border-b border-navy-700/50 pb-6">
         <div className="p-3 bg-amber-500/20 rounded-lg text-amber-400">
           <AlertTriangle className="w-8 h-8" />
@@ -57,7 +58,7 @@ export default function InvestigationGapsPage() {
                 </div>
 
                 <p className="text-white text-base">
-                  We have no verified footage or sightings of Rahul Sharma during this 13-minute window:
+                  We have no verified footage or sightings of {personName} during this 13-minute window:
                 </p>
 
                 <div className="flex items-center gap-4 bg-black/40 p-4 rounded-lg font-mono text-xl border border-white/5">

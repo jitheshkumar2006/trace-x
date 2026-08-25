@@ -141,8 +141,9 @@ export const useAppStore = create<AppState>((set, get) => ({
 
   addCase: (c) => {
     set((s) => ({
-      cases: [...s.cases, c],
+      cases: [c, ...s.cases.filter(existing => existing.id !== c.id)],
       activeCase: c,
+      cctv014Investigated: false,
     }));
   },
 
