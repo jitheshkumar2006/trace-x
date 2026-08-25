@@ -1,5 +1,5 @@
 // ============================================================
-// TRACE-X — App Layout (Sidebar + TopBar + Content)
+// TRACE-X — App Layout (Clean Executive Intelligence Portal)
 // ============================================================
 
 import { NavLink, useNavigate } from 'react-router-dom';
@@ -18,9 +18,8 @@ import {
   Shield,
   Settings,
   LogOut,
-  Bell,
   Search,
-  Radar,
+  Activity,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
@@ -40,17 +39,10 @@ const navItems = [
 ];
 
 const roleLabels: Record<string, string> = {
-  police: 'Police / Investigator',
+  police: 'Investigator T1',
   ngo: 'NGO Partner',
-  volunteer: 'Verified Volunteer',
-  family: 'Family Member',
-};
-
-const roleColors: Record<string, string> = {
-  police: 'bg-blue-500/20 text-blue-300 border-blue-500/30',
-  ngo: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
-  volunteer: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
-  family: 'bg-purple-500/20 text-purple-300 border-purple-500/30',
+  volunteer: 'Field Volunteer',
+  family: 'Family View',
 };
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
@@ -71,29 +63,32 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div className="flex h-screen overflow-hidden bg-navy-950">
       {/* Sidebar */}
       <aside
         className={`${
-          sidebarCollapsed ? 'w-[68px]' : 'w-[260px]'
-        } flex-shrink-0 bg-navy-900/80 backdrop-blur-xl border-r border-navy-700/50 flex flex-col transition-all duration-300 overflow-hidden`}
+          sidebarCollapsed ? 'w-[64px]' : 'w-[240px]'
+        } flex-shrink-0 bg-navy-900 border-r border-navy-800 flex flex-col transition-all duration-200 select-none`}
       >
-        {/* Logo */}
-        <div className="p-4 border-b border-navy-700/50">
-          <div className="flex items-center gap-3 cursor-pointer" onClick={() => setSidebarCollapsed(!sidebarCollapsed)}>
-            <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center flex-shrink-0">
-              <Radar className="w-5 h-5 text-white" />
+        {/* Brand Header */}
+        <div className="h-14 px-4 border-b border-navy-800 flex items-center justify-between">
+          <div
+            className="flex items-center gap-3 cursor-pointer"
+            onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+          >
+            <div className="w-8 h-8 rounded-md bg-blue-600 flex items-center justify-center flex-shrink-0 text-white font-bold">
+              <Activity className="w-4 h-4" />
             </div>
             {!sidebarCollapsed && (
               <div>
-                <h1 className="text-lg font-bold tracking-tight text-white">TRACE-X</h1>
-                <p className="text-[10px] text-navy-400 font-medium tracking-wider uppercase">Evidence Intelligence</p>
+                <h1 className="text-base font-bold tracking-tight text-white">TRACE-X</h1>
+                <p className="text-[10px] text-navy-400 font-mono uppercase tracking-wider">SIH 2026 • PSS2</p>
               </div>
             )}
           </div>
         </div>
 
-        {/* Navigation */}
+        {/* Navigation Links */}
         <nav className="flex-1 py-3 px-2 space-y-0.5 overflow-y-auto">
           {navItems.map((item) => {
             const Icon = item.icon;
@@ -106,64 +101,62 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                 }
                 title={item.label}
               >
-                <Icon className="w-[18px] h-[18px] flex-shrink-0" />
+                <Icon className="w-4 h-4 flex-shrink-0" />
                 {!sidebarCollapsed && <span>{item.label}</span>}
               </NavLink>
             );
           })}
         </nav>
 
-        {/* User section */}
-        <div className="p-3 border-t border-navy-700/50">
+        {/* User Account Bar */}
+        <div className="p-3 border-t border-navy-800 bg-navy-950/40">
           {!sidebarCollapsed && currentUser && (
-            <div className="mb-2 px-2">
-              <p className="text-sm font-semibold text-navy-200 truncate">{currentUser.name}</p>
-              <span className={`inline-block mt-1 px-2 py-0.5 rounded text-[10px] font-bold border ${roleColors[currentUser.role]}`}>
-                {roleLabels[currentUser.role]}
-              </span>
+            <div className="mb-2 px-1">
+              <p className="text-xs font-semibold text-white truncate">{currentUser.name}</p>
+              <p className="text-[10px] text-navy-400 font-mono mt-0.5">{roleLabels[currentUser.role]}</p>
             </div>
           )}
           <button
             onClick={handleLogout}
-            className="sidebar-item w-full text-red-400 hover:text-red-300 hover:bg-red-500/10"
+            className="sidebar-item w-full text-red-400 hover:bg-red-500/10 hover:text-red-300"
           >
-            <LogOut className="w-[18px] h-[18px] flex-shrink-0" />
+            <LogOut className="w-4 h-4 flex-shrink-0" />
             {!sidebarCollapsed && <span>Sign Out</span>}
           </button>
         </div>
       </aside>
 
-      {/* Main Content */}
+      {/* Main View Area */}
       <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Top Bar */}
-        <header className="h-14 border-b border-navy-700/50 bg-navy-900/40 backdrop-blur-xl flex items-center justify-between px-6 flex-shrink-0">
+        {/* Top Header Bar */}
+        <header className="h-14 border-b border-navy-800 bg-navy-900/60 px-6 flex items-center justify-between flex-shrink-0">
           <div className="flex items-center gap-3">
             <div className="relative">
-              <Search className="w-4 h-4 text-navy-500 absolute left-3 top-1/2 -translate-y-1/2" />
+              <Search className="w-3.5 h-3.5 text-navy-500 absolute left-3 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
-                placeholder="Search cases, evidence..."
-                className="pl-9 pr-4 py-1.5 bg-navy-800/60 border border-navy-700/50 rounded-lg text-sm text-navy-300 w-64 focus:outline-none focus:border-blue-500/50 transition-colors"
+                placeholder="Search case TRX-2026-001..."
+                className="pl-8 pr-3 py-1 bg-navy-950 border border-navy-800 rounded-md text-xs text-navy-200 w-56 focus:outline-none focus:border-blue-500 transition-colors font-sans"
               />
             </div>
           </div>
+
           <div className="flex items-center gap-4">
-            <span className="prototype-badge">Prototype Simulation</span>
-            <button className="relative p-2 rounded-lg hover:bg-navy-800/60 transition-colors">
-              <Bell className="w-4 h-4 text-navy-400" />
-              <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-            </button>
+            <span className="prototype-badge">
+              <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse"></span>
+              Live System Prototype
+            </span>
             {currentUser && (
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-xs font-bold text-white">
-                  {currentUser.name.split(' ').map(n => n[0]).join('')}
+                <div className="w-7 h-7 rounded-full bg-navy-800 border border-navy-700 flex items-center justify-center text-xs font-semibold text-blue-400">
+                  {currentUser.name.split(' ').map((n) => n[0]).join('')}
                 </div>
               </div>
             )}
           </div>
         </header>
 
-        {/* Page Content */}
+        {/* Dynamic Page Component */}
         <main className="flex-1 overflow-y-auto p-6 bg-navy-950">
           {children}
         </main>
