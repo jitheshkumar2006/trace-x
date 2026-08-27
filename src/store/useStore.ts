@@ -53,20 +53,18 @@ interface AuthState {
   logout: () => void;
 }
 
-export const useAuthStore = create<AuthState>()(
-  persist(
-    (set) => ({
-      currentUser: demoUsers[0],
-      isAuthenticated: true,
-      login: (role) => {
-        const user = demoUsers.find((u) => u.role === role) || demoUsers[0];
-        set({ currentUser: user, isAuthenticated: true });
-      },
-      logout: () => set({ currentUser: null, isAuthenticated: false }),
-    }),
-    { name: 'tracex-auth-storage' }
-  )
-);
+export const useAuthStore = create<AuthState>((set) => ({
+  currentUser: null,
+  isAuthenticated: false,
+  login: (role) => {
+    const user = demoUsers.find((u) => u.role === role) || demoUsers[0];
+    set({ currentUser: user, isAuthenticated: true });
+  },
+  logout: () => {
+    localStorage.removeItem('tracex-auth-storage');
+    set({ currentUser: null, isAuthenticated: false });
+  },
+}));
 
 // ─── Main App Store ───────────────────────────────────────────
 export interface AppState {
