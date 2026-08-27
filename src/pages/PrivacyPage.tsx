@@ -18,21 +18,20 @@ export const PrivacyPage: React.FC = () => {
 
   return (
     <div className="max-w-6xl mx-auto space-y-6">
-      <header className="border-b border-navy-800 pb-4">
-        <h1 className="text-2xl font-bold text-white flex items-center gap-3">
+      <header className="border-b border-[#1D2733] pb-4">
+        <h1 className="text-2xl font-extrabold text-[#E6EDF3] font-mono flex items-center gap-2">
           <Shield className="w-6 h-6 text-emerald-400" />
-          Privacy & Security Architecture
+          PRIVACY & ACCESS CONTROL ARCHITECTURE
         </h1>
-        <p className="text-xs text-navy-400 mt-1">Role-based access control, end-to-end encryption, and human verification safeguards</p>
+        <p className="text-xs text-[#8B98A8] font-mono mt-0.5">Role-based access matrix, end-to-end encryption, and human verification policy</p>
       </header>
 
-      <div className="mb-6 p-4 bg-status-warning/10 border border-status-warning/30 rounded-lg flex gap-3 items-start">
-        <ShieldCheck className="w-6 h-6 text-status-warning flex-shrink-0" />
-        <div>
-          <h3 className="text-status-warning font-medium">Privacy-First Architecture</h3>
-          <p className="text-sm text-gray-300 mt-1">
-            TRACE-X is built on strict data minimization principles. Biometric data is never exposed to normal users,
-            and AI systems cannot automatically trigger enforcement actions without human verification.
+      <div className="p-4 bg-[#0D1219] border border-emerald-500/30 rounded-xl flex gap-3 items-start text-xs font-mono">
+        <ShieldCheck className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" />
+        <div className="space-y-1">
+          <h3 className="text-white font-bold">PRIVACY-FIRST GOVERNANCE PROTOCOL</h3>
+          <p className="text-[#8B98A8] font-sans">
+            TRACE-X enforces strict data minimization. Biometric records are strictly protected, and AI suggestions cannot trigger autonomous enforcement without human officer verification.
           </p>
         </div>
       </div>
@@ -44,28 +43,28 @@ export const PrivacyPage: React.FC = () => {
         className="grid grid-cols-1 md:grid-cols-2 gap-6"
       >
         {/* Data Minimization */}
-        <motion.section variants={itemVariants} className="glass-card p-6">
-          <header className="flex items-center gap-2 mb-4 border-b border-navy-700 pb-2">
-            <EyeOff className="w-5 h-5 text-accent-cyan" />
-            <h2 className="text-xl font-semibold text-gray-200">Data Minimization</h2>
+        <motion.section variants={itemVariants} className="glass-card p-6 space-y-4">
+          <header className="flex items-center gap-2 border-b border-[#1D2733] pb-2 font-mono">
+            <EyeOff className="w-5 h-5 text-sky-400" />
+            <h2 className="text-sm font-bold text-white uppercase">Data Minimization</h2>
           </header>
-          <div className="space-y-4">
-            <p className="text-sm text-gray-400">Only essential information is collected and stored.</p>
-            <div className="grid grid-cols-2 gap-4 text-sm">
-              <div className="bg-navy-900/50 p-3 rounded border border-navy-800">
-                <h4 className="text-status-success mb-2 font-medium">Collected</h4>
-                <ul className="space-y-1 text-gray-400 list-disc list-inside">
-                  <li>Metadata & Timestamps</li>
-                  <li>Anonymized Location Data</li>
-                  <li>Verified Case Details</li>
+          <div className="space-y-3 font-mono text-xs">
+            <p className="text-[#8B98A8] font-sans">Only essential investigation metadata is collected and processed.</p>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="bg-[#080B10] p-3 rounded-lg border border-[#1D2733]">
+                <h4 className="text-emerald-400 mb-2 font-bold uppercase text-[10px]">COLLECTED DATA</h4>
+                <ul className="space-y-1 text-[#8B98A8] text-[11px]">
+                  <li>• Case Timestamps</li>
+                  <li>• Anonymized Geospatial Dots</li>
+                  <li>• Verified Clue Descriptions</li>
                 </ul>
               </div>
-              <div className="bg-navy-900/50 p-3 rounded border border-navy-800">
-                <h4 className="text-status-danger mb-2 font-medium">Not Collected</h4>
-                <ul className="space-y-1 text-gray-400 list-disc list-inside">
-                  <li>Public Facial Database</li>
-                  <li>Unrelated Citizen Data</li>
-                  <li>Persistent Tracking</li>
+              <div className="bg-[#080B10] p-3 rounded-lg border border-[#1D2733]">
+                <h4 className="text-red-400 mb-2 font-bold uppercase text-[10px]">EXCLUDED DATA</h4>
+                <ul className="space-y-1 text-[#8B98A8] text-[11px]">
+                  <li>• Public Facial Database</li>
+                  <li>• Mass Civilian Tracking</li>
+                  <li>• Persistent Surveillance</li>
                 </ul>
               </div>
             </div>
@@ -73,74 +72,74 @@ export const PrivacyPage: React.FC = () => {
         </motion.section>
 
         {/* Human Verification */}
-        <motion.section variants={itemVariants} className="glass-card p-6">
-          <header className="flex items-center gap-2 mb-4 border-b border-navy-700 pb-2">
-            <Users className="w-5 h-5 text-accent-indigo" />
-            <h2 className="text-xl font-semibold text-gray-200">Human Verification Policy</h2>
+        <motion.section variants={itemVariants} className="glass-card p-6 space-y-4">
+          <header className="flex items-center gap-2 border-b border-[#1D2733] pb-2 font-mono">
+            <Users className="w-5 h-5 text-sky-400" />
+            <h2 className="text-sm font-bold text-white uppercase">Human Verification Policy</h2>
           </header>
-          <div className="space-y-3">
-            <p className="text-sm text-gray-300 leading-relaxed">
-              AI systems in TRACE-X operate strictly in an assistive capacity. They surface potential leads but cannot take autonomous action.
+          <div className="space-y-3 font-mono text-xs">
+            <p className="text-[#E6EDF3] font-sans">
+              AI algorithms surface candidate leads but cannot initiate enforcement action without officer review.
             </p>
-            <div className="warning-label inline-block">
-              All AI matches are labeled: "Potential Lead — Human Verification Required"
+            <div className="warning-label font-mono text-[11px]">
+              "Potential Lead — Human Verification Required"
             </div>
-            <div className="bg-navy-900 p-3 rounded text-sm text-gray-400 border border-navy-800 mt-2">
-              Every identified match must be verified by a designated Human Investigator before being upgraded to actionable intelligence.
+            <div className="bg-[#080B10] p-3 rounded-lg text-[#8B98A8] border border-[#1D2733] text-[11px]">
+              Every match must be verified by an authorized Police Investigator before being upgraded to actionable intelligence.
             </div>
           </div>
         </motion.section>
 
         {/* Role-Based Access Matrix */}
-        <motion.section variants={itemVariants} className="glass-card p-6 md:col-span-2">
-          <header className="flex items-center gap-2 mb-4 border-b border-navy-700 pb-2">
-            <Lock className="w-5 h-5 text-accent-blue" />
-            <h2 className="text-xl font-semibold text-gray-200">Role-Based Access Matrix</h2>
+        <motion.section variants={itemVariants} className="glass-card p-6 md:col-span-2 space-y-4">
+          <header className="flex items-center gap-2 border-b border-[#1D2733] pb-2 font-mono">
+            <Lock className="w-5 h-5 text-sky-400" />
+            <h2 className="text-sm font-bold text-white uppercase">Role-Based Access Control Matrix (RBAC)</h2>
           </header>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm text-left">
-              <thead className="bg-navy-900/80 text-gray-400 uppercase text-xs">
+          <div className="overflow-x-auto font-mono text-xs">
+            <table className="w-full text-left">
+              <thead className="bg-[#080B10] text-[#8B98A8] uppercase text-[10px]">
                 <tr>
-                  <th className="px-4 py-3 rounded-tl">Role</th>
-                  <th className="px-4 py-3">Cases</th>
-                  <th className="px-4 py-3">Evidence</th>
-                  <th className="px-4 py-3">CCTV Feeds</th>
-                  <th className="px-4 py-3">Citizen Reports</th>
-                  <th className="px-4 py-3 rounded-tr">Audit Logs</th>
+                  <th className="px-4 py-3 border-b border-[#1D2733]">ROLE</th>
+                  <th className="px-4 py-3 border-b border-[#1D2733]">ACTIVE CASES</th>
+                  <th className="px-4 py-3 border-b border-[#1D2733]">EVIDENCE INBOX</th>
+                  <th className="px-4 py-3 border-b border-[#1D2733]">CCTV FEEDS</th>
+                  <th className="px-4 py-3 border-b border-[#1D2733]">CITIZEN REPORTS</th>
+                  <th className="px-4 py-3 border-b border-[#1D2733]">AUDIT LOGS</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-navy-800 text-gray-300">
-                <tr className="hover:bg-navy-800/30">
-                  <td className="px-4 py-3 font-medium">Police / Lead Investigator</td>
-                  <td className="px-4 py-3"><Check className="w-4 h-4 text-status-success" /></td>
-                  <td className="px-4 py-3"><Check className="w-4 h-4 text-status-success" /></td>
-                  <td className="px-4 py-3"><Check className="w-4 h-4 text-status-success" /></td>
-                  <td className="px-4 py-3"><Check className="w-4 h-4 text-status-success" /></td>
-                  <td className="px-4 py-3"><Check className="w-4 h-4 text-status-success" /></td>
+              <tbody className="divide-y divide-[#1D2733] text-[#E6EDF3]">
+                <tr>
+                  <td className="px-4 py-3 font-bold text-sky-400">Police / Investigator</td>
+                  <td className="px-4 py-3"><Check className="w-4 h-4 text-emerald-400" /></td>
+                  <td className="px-4 py-3"><Check className="w-4 h-4 text-emerald-400" /></td>
+                  <td className="px-4 py-3"><Check className="w-4 h-4 text-emerald-400" /></td>
+                  <td className="px-4 py-3"><Check className="w-4 h-4 text-emerald-400" /></td>
+                  <td className="px-4 py-3"><Check className="w-4 h-4 text-emerald-400" /></td>
                 </tr>
-                <tr className="hover:bg-navy-800/30">
-                  <td className="px-4 py-3 font-medium">NGO Case Worker</td>
-                  <td className="px-4 py-3"><Check className="w-4 h-4 text-status-success" /></td>
-                  <td className="px-4 py-3"><Check className="w-4 h-4 text-status-success" /></td>
-                  <td className="px-4 py-3"><X className="w-4 h-4 text-status-danger" /></td>
-                  <td className="px-4 py-3"><Check className="w-4 h-4 text-status-success" /></td>
-                  <td className="px-4 py-3"><X className="w-4 h-4 text-status-danger" /></td>
+                <tr>
+                  <td className="px-4 py-3 font-bold text-emerald-400">NGO Partner</td>
+                  <td className="px-4 py-3"><Check className="w-4 h-4 text-emerald-400" /></td>
+                  <td className="px-4 py-3"><Check className="w-4 h-4 text-emerald-400" /></td>
+                  <td className="px-4 py-3"><X className="w-4 h-4 text-red-400" /></td>
+                  <td className="px-4 py-3"><Check className="w-4 h-4 text-emerald-400" /></td>
+                  <td className="px-4 py-3"><X className="w-4 h-4 text-red-400" /></td>
                 </tr>
-                <tr className="hover:bg-navy-800/30">
-                  <td className="px-4 py-3 font-medium">Volunteer</td>
-                  <td className="px-4 py-3 text-gray-500 text-xs">Assigned Only</td>
-                  <td className="px-4 py-3 text-gray-500 text-xs">Public Only</td>
-                  <td className="px-4 py-3"><X className="w-4 h-4 text-status-danger" /></td>
-                  <td className="px-4 py-3 text-gray-500 text-xs">Submit Only</td>
-                  <td className="px-4 py-3"><X className="w-4 h-4 text-status-danger" /></td>
+                <tr>
+                  <td className="px-4 py-3 font-bold text-amber-400">Field Volunteer</td>
+                  <td className="px-4 py-3 text-[#8B98A8] text-[11px]">Assigned Only</td>
+                  <td className="px-4 py-3 text-[#8B98A8] text-[11px]">Public Only</td>
+                  <td className="px-4 py-3"><X className="w-4 h-4 text-red-400" /></td>
+                  <td className="px-4 py-3 text-[#8B98A8] text-[11px]">Submit Only</td>
+                  <td className="px-4 py-3"><X className="w-4 h-4 text-red-400" /></td>
                 </tr>
-                <tr className="hover:bg-navy-800/30">
-                  <td className="px-4 py-3 font-medium">Family Member</td>
-                  <td className="px-4 py-3 text-gray-500 text-xs">View Own</td>
-                  <td className="px-4 py-3 text-gray-500 text-xs">View Allowed</td>
-                  <td className="px-4 py-3"><X className="w-4 h-4 text-status-danger" /></td>
-                  <td className="px-4 py-3"><X className="w-4 h-4 text-status-danger" /></td>
-                  <td className="px-4 py-3"><X className="w-4 h-4 text-status-danger" /></td>
+                <tr>
+                  <td className="px-4 py-3 font-bold text-purple-400">Family Member</td>
+                  <td className="px-4 py-3 text-[#8B98A8] text-[11px]">View Approved</td>
+                  <td className="px-4 py-3 text-[#8B98A8] text-[11px]">Screened Feed</td>
+                  <td className="px-4 py-3"><X className="w-4 h-4 text-red-400" /></td>
+                  <td className="px-4 py-3"><X className="w-4 h-4 text-red-400" /></td>
+                  <td className="px-4 py-3"><X className="w-4 h-4 text-red-400" /></td>
                 </tr>
               </tbody>
             </table>
@@ -148,50 +147,50 @@ export const PrivacyPage: React.FC = () => {
         </motion.section>
 
         {/* Encryption Architecture */}
-        <motion.section variants={itemVariants} className="glass-card p-6">
-          <header className="flex items-center gap-2 mb-4 border-b border-navy-700 pb-2">
-            <Database className="w-5 h-5 text-gray-400" />
-            <h2 className="text-xl font-semibold text-gray-200">Encryption Architecture</h2>
+        <motion.section variants={itemVariants} className="glass-card p-6 space-y-4">
+          <header className="flex items-center gap-2 border-b border-[#1D2733] pb-2 font-mono">
+            <Database className="w-5 h-5 text-sky-400" />
+            <h2 className="text-sm font-bold text-white uppercase">Encryption Architecture</h2>
           </header>
-          <div className="flex flex-col items-center gap-4 py-4">
-            <div className="w-full bg-navy-900 border border-navy-700 p-3 rounded text-center">
-              <span className="text-xs text-gray-400 block mb-1">Client Device</span>
-              <span className="text-sm font-medium text-gray-200">End-to-End Encryption Setup</span>
+          <div className="flex flex-col items-center gap-3 py-2 font-mono text-xs">
+            <div className="w-full bg-[#080B10] border border-[#1D2733] p-3 rounded-lg text-center">
+              <span className="text-[10px] text-[#8B98A8] block">CLIENT ENDPOINT</span>
+              <span className="text-white font-bold">End-to-End Encrypted Transit</span>
             </div>
-            <div className="h-6 border-l-2 border-dashed border-accent-blue"></div>
-            <div className="w-full bg-navy-800 border border-accent-blue p-3 rounded text-center shadow-[0_0_15px_rgba(59,130,246,0.1)]">
-              <span className="text-xs text-accent-blue block mb-1">In Transit</span>
-              <span className="text-sm font-medium text-gray-100">TLS 1.3 Encryption</span>
+            <div className="h-4 border-l-2 border-dashed border-sky-400"></div>
+            <div className="w-full bg-[#111821] border border-sky-500/50 p-3 rounded-lg text-center">
+              <span className="text-[10px] text-sky-400 block">IN TRANSIT</span>
+              <span className="text-white font-bold">TLS 1.3 Transport Protocol</span>
             </div>
-            <div className="h-6 border-l-2 border-dashed border-accent-blue"></div>
-            <div className="w-full bg-navy-900 border border-navy-700 p-3 rounded text-center">
-              <span className="text-xs text-gray-400 block mb-1">Server / Database</span>
-              <span className="text-sm font-medium text-gray-200">AES-256 Data at Rest</span>
+            <div className="h-4 border-l-2 border-dashed border-sky-400"></div>
+            <div className="w-full bg-[#080B10] border border-[#1D2733] p-3 rounded-lg text-center">
+              <span className="text-[10px] text-[#8B98A8] block">DATA AT REST</span>
+              <span className="text-white font-bold">AES-256 Cloud Storage Encryption</span>
             </div>
           </div>
         </motion.section>
 
-        {/* Data Retention */}
-        <motion.section variants={itemVariants} className="glass-card p-6">
-          <header className="flex items-center gap-2 mb-4 border-b border-navy-700 pb-2">
-            <FileText className="w-5 h-5 text-status-info" />
-            <h2 className="text-xl font-semibold text-gray-200">Data Retention Policy</h2>
+        {/* Retention Policy */}
+        <motion.section variants={itemVariants} className="glass-card p-6 space-y-4">
+          <header className="flex items-center gap-2 border-b border-[#1D2733] pb-2 font-mono">
+            <FileText className="w-5 h-5 text-sky-400" />
+            <h2 className="text-sm font-bold text-white uppercase">Data Retention Policy</h2>
           </header>
-          <ul className="space-y-4">
-            <li className="flex justify-between items-center bg-navy-900/50 p-3 rounded border border-navy-800">
-              <span className="text-sm font-medium text-gray-300">Resolved Cases</span>
+          <ul className="space-y-3 font-mono text-xs">
+            <li className="flex justify-between items-center bg-[#080B10] p-3 rounded-lg border border-[#1D2733]">
+              <span className="text-white">Resolved Case Records</span>
               <span className="prototype-badge">10 Years</span>
             </li>
-            <li className="flex justify-between items-center bg-navy-900/50 p-3 rounded border border-navy-800">
-              <span className="text-sm font-medium text-gray-300">CCTV Cache</span>
+            <li className="flex justify-between items-center bg-[#080B10] p-3 rounded-lg border border-[#1D2733]">
+              <span className="text-white">CCTV Cache Storage</span>
               <span className="prototype-badge">90 Days</span>
             </li>
-            <li className="flex justify-between items-center bg-navy-900/50 p-3 rounded border border-navy-800">
-              <span className="text-sm font-medium text-gray-300">Unverified Citizen Reports</span>
+            <li className="flex justify-between items-center bg-[#080B10] p-3 rounded-lg border border-[#1D2733]">
+              <span className="text-white">Unverified Citizen Reports</span>
               <span className="prototype-badge">1 Year</span>
             </li>
-            <li className="flex justify-between items-center bg-navy-900/50 p-3 rounded border border-navy-800">
-              <span className="text-sm font-medium text-gray-300">Audit Logs</span>
+            <li className="flex justify-between items-center bg-[#080B10] p-3 rounded-lg border border-[#1D2733]">
+              <span className="text-white">Audit Trail Logs</span>
               <span className="prototype-badge">Indefinite</span>
             </li>
           </ul>

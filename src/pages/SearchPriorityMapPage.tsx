@@ -1,5 +1,4 @@
 import { useMemo } from 'react';
-import { motion } from 'framer-motion';
 import { useAppStore } from '../store/useStore';
 import { MapContainer, TileLayer, Circle, Popup, Polyline, Marker } from 'react-leaflet';
 import { MapPin, Navigation, Info, ShieldCheck } from 'lucide-react';
@@ -16,17 +15,17 @@ L.Icon.Default.mergeOptions({
 
 const getPriorityColor = (priority: string) => {
   switch (priority) {
-    case 'high': return '#ef4444';
-    case 'medium': return '#f97316';
-    case 'low': return '#eab308';
-    default: return '#6b7280';
+    case 'high': return '#EF4444';
+    case 'medium': return '#F59E0B';
+    case 'low': return '#4a5c75';
+    default: return '#334358';
   }
 };
 
 const getPriorityFillOpacity = (priority: string) => {
   switch (priority) {
-    case 'high': return 0.25;
-    case 'medium': return 0.20;
+    case 'high': return 0.3;
+    case 'medium': return 0.2;
     case 'low': return 0.15;
     default: return 0.1;
   }
@@ -34,6 +33,7 @@ const getPriorityFillOpacity = (priority: string) => {
 
 export default function SearchPriorityMapPage() {
   const { searchZones, evidence, activeCase, cctv014Investigated } = useAppStore();
+  const personName = activeCase?.person.name || 'the subject';
 
   const displayZones = useMemo(() => {
     return searchZones.map(zone => {
@@ -44,7 +44,6 @@ export default function SearchPriorityMapPage() {
     }).sort((a, b) => b.probability - a.probability);
   }, [searchZones, cctv014Investigated]);
 
-  // Valid evidence markers with lat/lng
   const evidenceLocations = useMemo(() => {
     return evidence.filter(e => e.latitude && e.longitude);
   }, [evidence]);
@@ -60,30 +59,28 @@ export default function SearchPriorityMapPage() {
   const hypothesizedPath = pathCoordinates.slice(Math.max(0, pathCoordinates.length - 2));
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="space-y-6"
-    >
-      <div className="flex justify-between items-start">
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#1D2733] pb-4">
         <div>
-          <h1 className="text-2xl font-bold text-white flex items-center gap-3">
-            <MapPin className="text-blue-400" />
-            Search Area Priority Map
+          <h1 className="text-2xl font-extrabold text-[#E6EDF3] tracking-tight font-mono flex items-center gap-2">
+            <MapPin className="text-sky-400 w-6 h-6" />
+            SEARCH PRIORITY MAP
           </h1>
-          <p className="text-navy-400 text-xs mt-1">
-            Ground search zones prioritized by time, distance, and verified evidence
+          <p className="text-xs text-[#8B98A8] mt-0.5 font-mono">
+            GEOSPATIAL TRAJECTORY MATRIX & CANDIDATE SEARCH PRIORITY ZONES FOR <span className="text-white font-semibold">{personName.toUpperCase()}</span>
           </p>
         </div>
-        <div className="flex items-center gap-2">
-          <span className="warning-label">Candidate Search Priorities</span>
-          <span className="prototype-badge">Leaflet Live View</span>
-        </div>
+
+        <span className="prototype-badge font-mono">
+          OPERATIONAL GEOSPATIAL MAP
+        </span>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 glass-card p-4 rounded-xl relative overflow-hidden">
-          <div className="h-[65vh] w-full rounded-lg overflow-hidden">
+        {/* Main Map Container */}
+        <div className="lg:col-span-2 glass-card p-4 rounded-xl relative overflow-hidden bg-[#080B10]">
+          <div className="h-[65vh] w-full rounded-lg overflow-hidden relative border border-[#1D2733]">
             <MapContainer
               center={[13.0827, 80.2707]}
               zoom={13}
@@ -99,7 +96,7 @@ export default function SearchPriorityMapPage() {
               {confirmedPath.length >= 2 && (
                 <Polyline
                   positions={confirmedPath}
-                  pathOptions={{ color: '#3b82f6', weight: 4, opacity: 0.8 }}
+                  pathOptions={{ color: '#38BDF8', weight: 4, opacity: 0.9 }}
                 />
               )}
 
@@ -107,7 +104,7 @@ export default function SearchPriorityMapPage() {
               {hypothesizedPath.length >= 2 && (
                 <Polyline
                   positions={hypothesizedPath}
-                  pathOptions={{ color: '#a855f7', weight: 3, dashArray: '8, 8', opacity: 0.8 }}
+                  pathOptions={{ color: '#F59E0B', weight: 3, dashArray: '8, 8', opacity: 0.8 }}
                 />
               )}
 
@@ -125,32 +122,21 @@ export default function SearchPriorityMapPage() {
                   }}
                 >
                   <Popup>
-                    <div className="p-1 min-w-[200px]">
+                    <div className="p-1 min-w-[200px] font-mono text-xs">
                       <div className="flex justify-between items-center mb-2">
-                        <h3 className="font-bold text-navy-100">{zone.name}</h3>
-                        <span className="px-2 py-0.5 rounded text-xs font-bold text-white bg-red-500/80">
+                        <h3 className="font-bold text-white text-sm">{zone.name}</h3>
+                        <span className="px-2 py-0.5 rounded text-xs font-bold text-white bg-red-600">
                           {zone.probability}%
                         </span>
                       </div>
-                      <div className="text-[10px] text-amber-400 font-bold uppercase tracking-wider mb-2">
-                        Candidate Search Priority
+                      <div className="text-[10px] text-sky-400 font-bold uppercase tracking-wider mb-2">
+                        CANDIDATE SEARCH PRIORITY
                       </div>
                       
                       {zone.reasons && zone.reasons.length > 0 && (
                         <div className="mb-2">
-                          <strong className="text-xs text-navy-300">Key Reasons:</strong>
-                          <ul className="list-disc pl-4 text-xs text-navy-400 mt-1 space-y-1">
-                            {zone.reasons.map((r: string, i: number) => (
-                              <li key={i}>{r}</li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
-
-                      {zone.recommendations && zone.recommendations.length > 0 && (
-                        <div className="mt-2 bg-navy-900/60 p-2 rounded border border-navy-700/50">
-                          <strong className="text-xs text-blue-300">Recommended Action:</strong>
-                          <p className="text-xs text-navy-300 mt-1">{zone.recommendations[0]}</p>
+                          <strong className="text-[#8B98A8]">Key Reason:</strong>
+                          <p className="text-white text-xs mt-0.5">{zone.reasons[0]}</p>
                         </div>
                       )}
                     </div>
@@ -166,100 +152,104 @@ export default function SearchPriorityMapPage() {
                   title={`[${item.id}] ${item.source}`}
                 >
                   <Popup>
-                    <div className="p-1 min-w-[180px]">
-                      <div className="text-[10px] text-blue-400 font-mono mb-1">{item.id}</div>
-                      <h4 className="font-bold text-navy-100">{item.source}</h4>
-                      <p className="text-xs text-navy-300 mt-1">{item.description}</p>
-                      <div className="mt-2 inline-block px-2 py-0.5 rounded text-[10px] font-semibold bg-blue-500/20 text-blue-300 border border-blue-500/30">
-                        {item.verificationStatus.replace('_', ' ').toUpperCase()}
-                      </div>
+                    <div className="p-1 min-w-[180px] font-mono text-xs">
+                      <div className="text-[10px] text-sky-400 mb-1">{item.id}</div>
+                      <h4 className="font-bold text-white">{item.source}</h4>
+                      <p className="text-[#8B98A8] text-[11px] mt-1">{item.description}</p>
                     </div>
                   </Popup>
                 </Marker>
               ))}
             </MapContainer>
+
+            {/* Floating Intelligence Card on Map */}
+            <div className="absolute top-4 right-4 z-[1000] bg-[#0D1219]/90 backdrop-blur-md p-3 rounded-lg border border-[#1D2733] text-xs font-mono max-w-[240px] space-y-1.5 shadow-xl">
+              <div className="flex items-center justify-between text-white font-bold">
+                <span>ZONE B</span>
+                <span className="text-red-400">{cctv014Investigated ? '91%' : '78%'}</span>
+              </div>
+              <div className="text-[10px] text-sky-400 uppercase font-semibold">SEARCH PRIORITY: HIGH</div>
+              <div className="text-[#8B98A8] text-[11px]">
+                Multiple correlated evidence sources indicate movement toward transit corridor.
+              </div>
+            </div>
           </div>
         </div>
 
+        {/* Side Panel: Zones & Operational Map Overlay Legend */}
         <div className="space-y-6">
-          <div className="glass-card p-5 rounded-xl border border-navy-700/50">
-            <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-              <Navigation size={18} className="text-accent-blue" />
-              Candidate Search Zones
+          {/* Operational Overlay Legend */}
+          <div className="glass-card p-5 space-y-3 font-mono">
+            <h3 className="text-xs font-bold text-white uppercase tracking-wider pb-2 border-b border-[#1D2733] flex items-center gap-2">
+              <Info className="w-4 h-4 text-sky-400" />
+              OPERATIONAL OVERLAY LEGEND
             </h3>
 
-            <div className="space-y-4">
-              {displayZones.map((zone, index) => (
-                <motion.div
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: index * 0.1 }}
+            <div className="space-y-2 text-xs text-[#8B98A8]">
+              <div className="flex items-center justify-between">
+                <span className="flex items-center gap-2"><span className="w-2.5 h-2.5 rounded-full bg-[#22C55E]"></span> CONFIRMED</span>
+                <span className="text-emerald-400 text-[10px]">VERIFIED SPOT</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="flex items-center gap-2"><span className="w-2.5 h-2.5 rounded-full bg-[#38BDF8]"></span> POTENTIAL</span>
+                <span className="text-sky-400 text-[10px]">LEAD CANDIDATE</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="flex items-center gap-2"><span className="w-4 h-0.5 border-t border-dashed border-[#F59E0B]"></span> EVIDENCE GAP</span>
+                <span className="text-amber-400 text-[10px]">UNCERTAIN PATH</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="flex items-center gap-2"><span className="w-4 h-2 bg-red-500/40 border border-red-500 rounded-sm"></span> SEARCH PRIORITY</span>
+                <span className="text-red-400 text-[10px]">HIGH DENSITY</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Candidate Search Zones List */}
+          <div className="glass-card p-5 space-y-3 font-mono">
+            <h3 className="text-xs font-bold text-white uppercase tracking-wider pb-2 border-b border-[#1D2733] flex items-center gap-2">
+              <Navigation className="w-4 h-4 text-sky-400" />
+              CANDIDATE SEARCH ZONES
+            </h3>
+
+            <div className="space-y-3">
+              {displayZones.map((zone) => (
+                <div
                   key={zone.id}
-                  className="bg-navy-800/50 p-3 rounded-lg border border-navy-700/50 hover:bg-navy-800 transition-colors"
+                  className="bg-[#080B10] p-3 rounded-lg border border-[#1D2733] space-y-1"
                 >
-                  <div className="flex justify-between items-start mb-2">
-                    <div className="font-medium text-navy-200">{zone.name}</div>
-                    <div className={`text-sm font-bold ${
+                  <div className="flex justify-between items-center">
+                    <span className="font-bold text-white text-xs">{zone.name}</span>
+                    <span className={`text-xs font-bold ${
                       zone.priority === 'high' ? 'text-red-400' :
-                      zone.priority === 'medium' ? 'text-orange-400' : 'text-yellow-400'
+                      zone.priority === 'medium' ? 'text-amber-400' : 'text-[#8B98A8]'
                     }`}>
                       {zone.probability}%
-                    </div>
+                    </span>
                   </div>
-                  <div className="text-xs text-navy-400 line-clamp-2">
+                  <p className="text-[11px] text-[#8B98A8] font-sans">
                     {zone.reasons && zone.reasons[0]}
-                  </div>
-                </motion.div>
+                  </p>
+                </div>
               ))}
             </div>
           </div>
 
-          <div className="glass-card p-5 rounded-xl border border-navy-700/50">
-            <h3 className="text-sm font-semibold text-navy-300 mb-3 flex items-center gap-2">
-              <Info size={16} />
-              Map Legend
-            </h3>
-
-            <div className="space-y-2 text-sm text-navy-400">
-              <div className="flex items-center gap-3">
-                <div className="w-4 h-4 rounded-full bg-red-500/30 border border-red-500"></div>
-                <span>High Priority Candidate Zone</span>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="w-4 h-4 rounded-full bg-orange-500/30 border border-orange-500"></div>
-                <span>Medium Priority Candidate Zone</span>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="w-4 h-4 rounded-full bg-yellow-500/30 border border-yellow-500"></div>
-                <span>Low Priority Candidate Zone</span>
-              </div>
-              <div className="h-px bg-navy-700 my-2"></div>
-              <div className="flex items-center gap-3">
-                <div className="w-6 h-0.5 bg-blue-500"></div>
-                <span>Confirmed Path</span>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="w-6 h-0.5 border-t-2 border-dashed border-purple-500"></div>
-                <span>Hypothesized Path</span>
-              </div>
-            </div>
-          </div>
-
           {activeCase && (
-            <div className="glass-card p-5 rounded-xl border border-navy-700/50">
-              <h3 className="text-sm font-semibold text-navy-300 mb-2 flex items-center gap-2">
-                <ShieldCheck size={16} className="text-emerald-400" />
-                Active Subject
+            <div className="glass-card p-5 font-mono space-y-2">
+              <h3 className="text-xs font-bold text-white uppercase tracking-wider pb-2 border-b border-[#1D2733] flex items-center gap-2">
+                <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                ACTIVE SUBJECT PROFILE
               </h3>
-              <div className="text-lg font-medium text-white">{activeCase.person.name}</div>
-              <div className="text-xs text-navy-400 mt-1 font-mono">Case ID: {activeCase.id}</div>
-              <div className="text-xs text-navy-400 mt-1">
-                Category: <span className="text-accent-cyan uppercase font-semibold">{activeCase.person.category}</span>
+              <div className="text-sm font-bold text-white">{activeCase.person.name}</div>
+              <div className="text-xs text-[#8B98A8]">CASE ID: <span className="text-sky-400">{activeCase.id}</span></div>
+              <div className="text-xs text-[#8B98A8]">
+                CATEGORY: <span className="text-sky-400 uppercase">{activeCase.person.category}</span>
               </div>
             </div>
           )}
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }

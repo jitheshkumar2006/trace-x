@@ -1,9 +1,3 @@
-// ============================================================
-// TRACE-X — Public Sighting Report (NO LOGIN REQUIRED)
-// This page is accessible by any citizen via a direct link.
-// It does NOT require authentication or any police credentials.
-// ============================================================
-
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -14,13 +8,13 @@ import {
   FileText,
   CheckCircle,
   ShieldCheck,
-  Phone,
   Eye,
-  AlertTriangle,
-  ArrowLeft,
 } from 'lucide-react';
+import { useAppStore } from '../store/useStore';
+import type { Evidence } from '../types';
 
 export default function PublicReportPage() {
+  const { addEvidence, activeCase, addAuditEntry } = useAppStore();
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [reportId, setReportId] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
@@ -36,233 +30,214 @@ export default function PublicReportPage() {
     setIsProcessing(true);
     setTimeout(() => {
       const id = `SIGHT-${Math.floor(1000 + Math.random() * 9000)}`;
+      const caseId = activeCase?.id || 'TRX-2026-001';
+
+      const newEvidence: Evidence = {
+        id: id,
+        caseId: caseId,
+        source: `Public Sighting (${id})`,
+        timestamp: time || new Date().toISOString(),
+        type: 'citizen_sighting',
+        latitude: 13.0827,
+        longitude: 80.2707,
+        confidence: 78,
+        processingStatus: 'analyzed',
+        privacyLevel: 'restricted',
+        verificationStatus: 'potential_lead',
+        description: `${description} [Location: ${location || 'Central Corridor'}]`,
+        createdAt: new Date().toISOString(),
+      };
+
+      addEvidence(newEvidence);
+
+      addAuditEntry({
+        caseId: caseId,
+        action: 'citizen_report_submitted',
+        userId: 'PUBLIC',
+        userName: 'Anonymous Citizen',
+        userRole: 'volunteer',
+        target: id,
+        details: `Public sighting report submitted at ${location || 'Unknown Location'}`
+      });
+
       setReportId(id);
       setIsProcessing(false);
       setIsSubmitted(true);
-    }, 1500);
+    }, 1200);
   };
 
   return (
-    <div className="min-h-screen bg-navy-950" style={{ backgroundImage: 'radial-gradient(circle at 50% 0%, #0f172a 0%, #080d16 80%)' }}>
-      {/* Top Banner */}
-      <header className="border-b border-navy-800 bg-navy-900/80 backdrop-blur-md">
+    <div className="min-h-screen bg-[#080B10]" style={{ backgroundImage: 'radial-gradient(circle at 50% 0%, #0d1522 0%, #080b10 80%)' }}>
+      {/* Top Command Header */}
+      <header className="border-b border-[#1D2733] bg-[#0D1219]/90 backdrop-blur-md">
         <div className="max-w-3xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-blue-600 flex items-center justify-center text-white shadow-lg shadow-blue-500/30">
-              <Radar className="w-5 h-5" />
+            <div className="w-9 h-9 rounded-lg bg-sky-600 flex items-center justify-center text-white shadow-md shadow-sky-500/20">
+              <Radar className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h1 className="text-lg font-bold text-white tracking-tight">TRACE-X</h1>
-              <p className="text-[10px] text-navy-400 font-mono uppercase tracking-widest">Public Sighting Portal</p>
+              <h1 className="text-base font-extrabold text-white tracking-widest font-mono">TRACE-X</h1>
+              <p className="text-[10px] text-sky-400 font-mono uppercase tracking-widest">SECURE SIGHTING REPORT</p>
             </div>
           </div>
-          <span className="text-[10px] text-navy-500 font-mono hidden sm:block">
-            No Login Required • 100% Anonymous
+          <span className="text-[10px] text-[#8B98A8] font-mono hidden sm:block">
+            NO LOGIN REQUIRED • ANONYMOUS REPORTING
           </span>
         </div>
       </header>
 
       <main className="max-w-3xl mx-auto px-4 py-8 space-y-6">
         {/* Trust Banner */}
-        <div className="bg-blue-950/40 border border-blue-500/30 rounded-lg p-4 flex items-start gap-3">
-          <Eye className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
-          <div className="text-xs space-y-1">
-            <p className="text-white font-semibold">Did You See Someone Who Might Be Missing?</p>
-            <p className="text-navy-300">
-              You do <strong>NOT</strong> need any login, police ID, or account to submit this report.
-              Your sighting will be securely reviewed by investigators. You can stay completely anonymous.
+        <div className="bg-[#0D1219] border border-[#1D2733] rounded-xl p-4 flex items-start gap-3 text-xs">
+          <ShieldCheck className="w-5 h-5 text-sky-400 flex-shrink-0 mt-0.5" />
+          <div className="space-y-1">
+            <p className="text-white font-semibold font-mono">Encrypted Community Reporting Interface</p>
+            <p className="text-[#8B98A8]">
+              Your sighting is dispatched directly to authorized law enforcement officers. Your identity is protected under encryption guidelines.
             </p>
           </div>
         </div>
 
         <AnimatePresence mode="wait">
           {!isSubmitted ? (
-            <motion.div
+            <motion.form
               key="form"
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.4 }}
+              exit={{ opacity: 0, y: -15 }}
+              onSubmit={handleSubmit}
+              className="glass-card p-6 border border-[#1D2733] space-y-5"
             >
-              <div className="glass-card p-6 space-y-1">
-                <h2 className="text-xl font-bold text-white mb-1">Submit a Sighting Report</h2>
-                <p className="text-xs text-navy-400 mb-5">All fields are optional except Location and Description.</p>
-
-                <form onSubmit={handleSubmit} className="space-y-5">
-                  {/* Photo Upload */}
-                  <div>
-                    <label className="block text-sm font-medium text-navy-200 mb-2">
-                      📷 Upload Photo (optional)
-                    </label>
-                    <div className="border-2 border-dashed border-navy-600 rounded-lg p-6 text-center hover:border-blue-500/50 transition-colors cursor-pointer bg-navy-900/50">
-                      <Upload className="w-7 h-7 text-navy-500 mx-auto mb-2" />
-                      <p className="text-xs text-navy-400">Tap to upload or drag a photo here</p>
-                      <p className="text-[10px] text-navy-500 mt-1">Photos help investigators verify sightings faster</p>
-                    </div>
-                  </div>
-
-                  {/* Location */}
-                  <div>
-                    <label className="block text-sm font-medium text-navy-200 mb-2">
-                      📍 Where did you see them? *
-                    </label>
-                    <div className="relative">
-                      <MapPin className="w-4 h-4 text-navy-500 absolute left-3 top-2.5" />
-                      <input
-                        type="text"
-                        required
-                        value={location}
-                        onChange={(e) => setLocation(e.target.value)}
-                        className="input-field pl-9 w-full"
-                        placeholder="e.g. Near Central Bus Stand, Gate 3"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Time */}
-                  <div>
-                    <label className="block text-sm font-medium text-navy-200 mb-2">
-                      🕐 When did you see them? (optional)
-                    </label>
-                    <div className="relative">
-                      <Clock className="w-4 h-4 text-navy-500 absolute left-3 top-2.5" />
-                      <input
-                        type="datetime-local"
-                        value={time}
-                        onChange={(e) => setTime(e.target.value)}
-                        className="input-field pl-9 w-full"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Description */}
-                  <div>
-                    <label className="block text-sm font-medium text-navy-200 mb-2">
-                      📝 What did you see? *
-                    </label>
-                    <div className="relative">
-                      <FileText className="w-4 h-4 text-navy-500 absolute left-3 top-3" />
-                      <textarea
-                        required
-                        value={description}
-                        onChange={(e) => setDescription(e.target.value)}
-                        className="input-field pl-9 w-full min-h-[100px]"
-                        placeholder="Describe the person you saw — what they were wearing, which direction they went, were they alone or with someone..."
-                      />
-                    </div>
-                  </div>
-
-                  {/* Phone (optional) */}
-                  <div>
-                    <label className="block text-sm font-medium text-navy-200 mb-2">
-                      📱 Your Phone Number (optional, stays private)
-                    </label>
-                    <div className="relative">
-                      <Phone className="w-4 h-4 text-navy-500 absolute left-3 top-2.5" />
-                      <input
-                        type="tel"
-                        value={contactPhone}
-                        onChange={(e) => setContactPhone(e.target.value)}
-                        className="input-field pl-9 w-full"
-                        placeholder="Only if you want investigators to contact you"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Submit */}
-                  <button
-                    type="submit"
-                    disabled={isProcessing}
-                    className="btn-primary w-full flex justify-center items-center gap-2 py-3 text-sm font-bold"
-                  >
-                    {isProcessing ? (
-                      <span className="flex items-center gap-2">
-                        <Radar className="w-4 h-4 animate-spin" />
-                        Encrypting & Submitting...
-                      </span>
-                    ) : (
-                      <>
-                        <ShieldCheck className="w-4 h-4" />
-                        Submit Report Anonymously
-                      </>
-                    )}
-                  </button>
-                </form>
+              <div className="border-b border-[#1D2733] pb-3">
+                <h2 className="text-sm font-bold text-white uppercase tracking-wider font-mono flex items-center gap-2">
+                  <Eye className="w-4 h-4 text-sky-400" />
+                  SIGHTING DETAILS
+                </h2>
+                <p className="text-xs text-[#8B98A8]">Please provide accurate location and time information</p>
               </div>
 
-              {/* Privacy Notice */}
-              <div className="mt-4 flex items-start gap-3 p-4 bg-navy-900/50 rounded-lg border border-navy-800">
-                <ShieldCheck className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" />
-                <div className="text-xs text-navy-400 leading-relaxed space-y-1">
-                  <p><strong className="text-emerald-400">Your Privacy Is Protected:</strong></p>
-                  <ul className="list-disc pl-4 space-y-0.5">
-                    <li>No login, email, or account is needed.</li>
-                    <li>Your IP address is not stored.</li>
-                    <li>Phone number is optional — shared only with the assigned officer.</li>
-                    <li>AI assists in matching but a human investigator always reviews.</li>
-                    <li>You will never be contacted unless you provide your phone number.</li>
-                  </ul>
+              {/* Photo Upload Area */}
+              <div>
+                <label className="block text-xs font-mono text-[#8B98A8] mb-1.5">UPLOAD PHOTO / FOOTAGE (OPTIONAL)</label>
+                <div className="border border-dashed border-[#1D2733] bg-[#080B10] rounded-xl p-6 text-center hover:border-sky-500/50 transition-colors cursor-pointer space-y-2">
+                  <Upload className="w-8 h-8 text-[#8B98A8] mx-auto" />
+                  <p className="text-xs font-semibold text-white">Click or drag photo here</p>
+                  <p className="text-[10px] text-[#8B98A8]">Supports JPG, PNG (Max 25MB)</p>
                 </div>
               </div>
-            </motion.div>
+
+              {/* Location Input */}
+              <div>
+                <label className="block text-xs font-mono text-[#8B98A8] mb-1">LOCATION *</label>
+                <div className="relative">
+                  <MapPin className="w-4 h-4 text-[#8B98A8] absolute left-3 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="text"
+                    required
+                    value={location}
+                    onChange={(e) => setLocation(e.target.value)}
+                    placeholder="e.g. Near Central Bus Stand, Gate 2"
+                    className="input-field pl-9"
+                  />
+                </div>
+              </div>
+
+              {/* Approximate Time */}
+              <div>
+                <label className="block text-xs font-mono text-[#8B98A8] mb-1">APPROXIMATE TIME *</label>
+                <div className="relative">
+                  <Clock className="w-4 h-4 text-[#8B98A8] absolute left-3 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="time"
+                    required
+                    value={time}
+                    onChange={(e) => setTime(e.target.value)}
+                    className="input-field pl-9"
+                  />
+                </div>
+              </div>
+
+              {/* Observation Textarea */}
+              <div>
+                <label className="block text-xs font-mono text-[#8B98A8] mb-1">OBSERVATION / DESCRIPTION *</label>
+                <div className="relative">
+                  <FileText className="w-4 h-4 text-[#8B98A8] absolute left-3 top-3" />
+                  <textarea
+                    required
+                    rows={3}
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    placeholder="Describe what you observed (clothing, companion, direction of walk)..."
+                    className="input-field pl-9 pt-2.5"
+                  />
+                </div>
+              </div>
+
+              {/* Optional Phone Contact */}
+              <div>
+                <label className="block text-xs font-mono text-[#8B98A8] mb-1">CONTACT NUMBER (OPTIONAL)</label>
+                <input
+                  type="tel"
+                  value={contactPhone}
+                  onChange={(e) => setContactPhone(e.target.value)}
+                  placeholder="Optional phone number for officer verification"
+                  className="input-field"
+                />
+              </div>
+
+              {/* Submit Button */}
+              <div className="pt-2">
+                <button
+                  type="submit"
+                  disabled={isProcessing}
+                  className="btn-primary w-full justify-center py-3 text-xs font-mono uppercase tracking-wider font-bold cursor-pointer"
+                >
+                  {isProcessing ? (
+                    <span className="flex items-center gap-2">
+                      <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      ENCRYPTING & TRANSMITTING REPORT...
+                    </span>
+                  ) : (
+                    '[ SUBMIT SECURELY ]'
+                  )}
+                </button>
+              </div>
+            </motion.form>
           ) : (
             <motion.div
               key="success"
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5 }}
-              className="glass-card p-8 text-center space-y-5"
+              className="glass-card p-8 border border-emerald-500/40 bg-[#0D1219] text-center space-y-5"
             >
-              <div className="w-20 h-20 rounded-full bg-emerald-500/10 border-2 border-emerald-500/40 flex items-center justify-center mx-auto">
-                <CheckCircle className="w-10 h-10 text-emerald-400" />
+              <div className="w-16 h-16 bg-emerald-500/10 border border-emerald-500/40 text-emerald-400 rounded-full flex items-center justify-center mx-auto">
+                <CheckCircle className="w-8 h-8" />
               </div>
 
-              <h2 className="text-2xl font-bold text-white">Report Received Successfully</h2>
-
-              <div className="bg-navy-900 p-4 rounded-lg inline-block border border-navy-700">
-                <p className="text-xs text-navy-400 mb-1">Your Report Tracking ID</p>
-                <p className="text-3xl font-mono text-blue-400 font-bold">{reportId}</p>
-              </div>
-
-              <div className="max-w-sm mx-auto space-y-2 text-xs text-navy-300">
-                <p>✅ Your sighting has been securely submitted.</p>
-                <p>✅ It will be reviewed by a human investigator within 30 minutes.</p>
-                <p>✅ Your identity is fully protected unless you chose to share your phone.</p>
-              </div>
-
-              <div className="bg-amber-950/30 border border-amber-500/30 rounded-lg p-3 max-w-sm mx-auto">
-                <p className="text-xs text-amber-300 flex items-center gap-2">
-                  <AlertTriangle className="w-4 h-4 flex-shrink-0" />
-                  If someone is in immediate danger, call <strong>112</strong> or your local police.
+              <div className="space-y-1">
+                <h2 className="text-xl font-extrabold text-white font-mono tracking-wider">REPORT RECEIVED</h2>
+                <p className="text-xs text-emerald-400 font-mono font-bold">REPORT ID: {reportId}</p>
+                <p className="text-xs text-[#8B98A8] max-w-md mx-auto pt-2 font-mono">
+                  Your report has been securely submitted. Law enforcement investigators have received your sighting report for verification.
                 </p>
               </div>
 
-              <button
-                onClick={() => {
-                  setIsSubmitted(false);
-                  setLocation('');
-                  setTime('');
-                  setDescription('');
-                  setContactPhone('');
-                }}
-                className="btn-ghost mt-4 inline-flex items-center gap-2"
-              >
-                <ArrowLeft className="w-4 h-4" />
-                Submit Another Report
-              </button>
+              <div className="pt-4">
+                <button
+                  onClick={() => {
+                    setIsSubmitted(false);
+                    setLocation('');
+                    setTime('');
+                    setDescription('');
+                  }}
+                  className="btn-ghost text-xs font-mono"
+                >
+                  Submit Another Sighting
+                </button>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
-
-        {/* Footer */}
-        <footer className="text-center py-6 border-t border-navy-800 mt-8 space-y-2">
-          <p className="text-[10px] text-navy-500 font-mono uppercase tracking-wider">
-            TRACE-X Public Sighting Portal • SIH 2026 • Problem Statement PSS2
-          </p>
-          <p className="text-[10px] text-navy-600">
-            An uncertainty-aware investigation intelligence platform for missing & vulnerable persons.
-          </p>
-        </footer>
       </main>
     </div>
   );

@@ -1,27 +1,38 @@
 /* ============================================================
-   TRACE-X — Executive Intelligence Design System
-   Rich, modern, high-contrast agency dashboard aesthetics
+   TRACE-X — National Operational Command Center Design System
+   Cinematic, dark, high-precision intelligence interface
    ============================================================ */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
 @theme {
-  --color-navy-950: #080d16;
-  --color-navy-900: #0f172a;
-  --color-navy-850: #141e33;
-  --color-navy-800: #1e293b;
-  --color-navy-750: #273549;
-  --color-navy-700: #334155;
-  --color-navy-600: #475569;
+  --color-cmd-bg: #080B10;
+  --color-cmd-surface: #0D1219;
+  --color-cmd-elevated: #111821;
+  --color-cmd-border: #1D2733;
+  --color-cmd-primary: #E6EDF3;
+  --color-cmd-secondary: #8B98A8;
+  --color-cmd-accent: #38BDF8;
+  --color-cmd-success: #22C55E;
+  --color-cmd-warning: #F59E0B;
+  --color-cmd-critical: #EF4444;
+
+  --color-navy-950: #080B10;
+  --color-navy-900: #0D1219;
+  --color-navy-850: #111821;
+  --color-navy-800: #1D2733;
+  --color-navy-750: #253344;
+  --color-navy-700: #334358;
+  --color-navy-600: #4a5c75;
   --color-navy-500: #64748b;
-  --color-navy-400: #94a3b8;
+  --color-navy-400: #8B98A8;
   --color-navy-300: #cbd5e1;
-  --color-navy-200: #e2e8f0;
+  --color-navy-200: #E6EDF3;
   --color-navy-100: #f8fafc;
 
-  --color-accent-blue: #3b82f6;
-  --color-accent-cyan: #06b6d4;
+  --color-accent-blue: #38BDF8;
+  --color-accent-cyan: #38BDF8;
   --color-accent-indigo: #6366f1;
 
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -36,9 +47,13 @@
 
 body {
   font-family: var(--font-sans);
-  background-color: var(--color-navy-950);
-  background-image: radial-gradient(circle at 50% 0%, #0f172a 0%, #080d16 80%);
-  color: var(--color-navy-100);
+  background-color: #080B10;
+  background-image: 
+    radial-gradient(circle at 50% 0%, #0d1522 0%, #080b10 80%),
+    linear-gradient(rgba(29, 39, 51, 0.25) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(29, 39, 51, 0.25) 1px, transparent 1px);
+  background-size: 100% 100%, 32px 32px, 32px 32px;
+  color: #E6EDF3;
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
   letter-spacing: -0.01em;
@@ -54,52 +69,114 @@ body {
   height: 5px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--color-navy-950);
+  background: #080B10;
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--color-navy-700);
+  background: #1D2733;
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--color-navy-600);
+  background: #334358;
 }
 
-/* ─── Glassmorphism Card Containers ─────────────────────── */
-.glass-card {
-  background: rgba(15, 23, 42, 0.75);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(51, 65, 85, 0.5);
+/* ─── Live Pulsing Status Indicators ────────────────────── */
+@keyframes pulse-soft {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.92); }
+}
+
+@keyframes pulse-glow-cyan {
+  0%, 100% { box-shadow: 0 0 10px rgba(56, 189, 248, 0.6); }
+  50% { box-shadow: 0 0 4px rgba(56, 189, 248, 0.2); }
+}
+
+@keyframes pulse-glow-red {
+  0%, 100% { box-shadow: 0 0 12px rgba(239, 68, 68, 0.8); }
+  50% { box-shadow: 0 0 3px rgba(239, 68, 68, 0.2); }
+}
+
+@keyframes flow-line {
+  0% { stroke-dashoffset: 24; }
+  100% { stroke-dashoffset: 0; }
+}
+
+.live-pulse-cyan {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #38BDF8;
+  box-shadow: 0 0 8px #38BDF8;
+  animation: pulse-soft 2s infinite ease-in-out;
+}
+
+.live-pulse-red {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #EF4444;
+  box-shadow: 0 0 8px #EF4444;
+  animation: pulse-soft 1.5s infinite ease-in-out;
+}
+
+.live-pulse-green {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #22C55E;
+  box-shadow: 0 0 8px #22C55E;
+  animation: pulse-soft 2s infinite ease-in-out;
+}
+
+.live-pulse-amber {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #F59E0B;
+  box-shadow: 0 0 8px #F59E0B;
+  animation: pulse-soft 2s infinite ease-in-out;
+}
+
+/* ─── Command Center Card Surface Containers ─────────────── */
+.glass-card,
+.command-card {
+  background: #0D1219;
+  border: 1px solid #1D2733;
   border-radius: 10px;
-  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5);
   transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.glass-card:hover {
-  border-color: rgba(59, 130, 246, 0.4);
-  box-shadow: 0 8px 30px -4px rgba(0, 0, 0, 0.6);
+.glass-card:hover,
+.command-card:hover {
+  border-color: rgba(56, 189, 248, 0.4);
+  box-shadow: 0 8px 30px -4px rgba(0, 0, 0, 0.7);
 }
 
-.glass-card-light {
-  background: rgba(30, 41, 59, 0.35);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(51, 65, 85, 0.35);
+.glass-card-light,
+.command-card-elevated {
+  background: #111821;
+  border: 1px solid #1D2733;
   border-radius: 8px;
   transition: border-color 0.15s ease;
 }
 
-.glass-card-light:hover {
-  border-color: rgba(71, 85, 105, 0.6);
+.glass-card-light:hover,
+.command-card-elevated:hover {
+  border-color: #253344;
 }
 
-/* ─── Progress Bar Design ──────────────────────────────── */
+/* ─── Case Certainty Progress Bar ──────────────────────── */
 .certainty-bar {
-  height: 7px;
+  height: 6px;
   border-radius: 9999px;
-  background: rgba(30, 41, 59, 0.9);
+  background: #111821;
   overflow: hidden;
   position: relative;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid #1D2733;
 }
 
 .certainty-bar-fill {
@@ -108,37 +185,40 @@ body {
   transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* ─── Premium Action Buttons ────────────────────────────── */
-.btn-primary {
-  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+/* ─── Buttons ──────────────────────────────────────────── */
+.btn-primary,
+.command-btn-primary {
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
   color: #ffffff;
   padding: 8px 16px;
   border-radius: 6px;
   font-weight: 600;
   font-size: 13px;
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(56, 189, 248, 0.3);
   cursor: pointer;
   transition: all 0.2s ease;
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  box-shadow: 0 2px 10px rgba(37, 99, 235, 0.2);
+  box-shadow: 0 2px 10px rgba(2, 132, 199, 0.25);
 }
 
-.btn-primary:hover {
-  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-  box-shadow: 0 0 18px rgba(59, 130, 246, 0.4);
+.btn-primary:hover,
+.command-btn-primary:hover {
+  background: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%);
+  box-shadow: 0 0 18px rgba(56, 189, 248, 0.4);
   transform: translateY(-1px);
 }
 
-.btn-ghost {
-  background: transparent;
-  color: #cbd5e1;
+.btn-ghost,
+.command-btn-ghost {
+  background: #0D1219;
+  color: #8B98A8;
   padding: 8px 16px;
   border-radius: 6px;
   font-weight: 500;
   font-size: 13px;
-  border: 1px solid #334155;
+  border: 1px solid #1D2733;
   cursor: pointer;
   transition: all 0.15s ease;
   display: inline-flex;
@@ -146,10 +226,11 @@ body {
   gap: 6px;
 }
 
-.btn-ghost:hover {
-  background: rgba(51, 65, 85, 0.4);
-  color: #ffffff;
-  border-color: #475569;
+.btn-ghost:hover,
+.command-btn-ghost:hover {
+  background: #111821;
+  color: #E6EDF3;
+  border-color: #38BDF8;
 }
 
 .btn-danger {
@@ -159,13 +240,13 @@ body {
   border-radius: 6px;
   font-weight: 600;
   font-size: 13px;
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.3);
   cursor: pointer;
   transition: all 0.2s ease;
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  box-shadow: 0 2px 10px rgba(220, 38, 38, 0.2);
+  box-shadow: 0 2px 10px rgba(220, 38, 38, 0.25);
 }
 
 .btn-danger:hover {
@@ -174,14 +255,14 @@ body {
   transform: translateY(-1px);
 }
 
-/* ─── Form Field Styling ───────────────────────────────── */
+/* ─── Inputs ───────────────────────────────────────────── */
 .input-field {
   width: 100%;
   padding: 9px 13px;
-  background: #0b1120;
-  border: 1px solid #334155;
+  background: #080B10;
+  border: 1px solid #1D2733;
   border-radius: 6px;
-  color: #f8fafc;
+  color: #E6EDF3;
   font-family: var(--font-sans);
   font-size: 13px;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
@@ -189,15 +270,15 @@ body {
 }
 
 .input-field:focus {
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+  border-color: #38BDF8;
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
 }
 
 .input-field::placeholder {
-  color: #475569;
+  color: #4a5c75;
 }
 
-/* ─── Refined Badges ───────────────────────────────────── */
+/* ─── Badges ───────────────────────────────────────────── */
 .badge-very-high {
   background: rgba(239, 68, 68, 0.12);
   color: #f87171;
@@ -210,9 +291,9 @@ body {
 }
 
 .badge-high {
-  background: rgba(249, 115, 22, 0.12);
-  color: #fb923c;
-  border: 1px solid rgba(249, 115, 22, 0.3);
+  background: rgba(245, 158, 11, 0.12);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.3);
   padding: 3px 9px;
   border-radius: 4px;
   font-size: 11px;
@@ -239,9 +320,9 @@ body {
   border-radius: 4px;
   font-size: 11px;
   font-weight: 600;
-  background: rgba(234, 179, 8, 0.12);
+  background: rgba(245, 158, 11, 0.12);
   color: #fde047;
-  border: 1px solid rgba(234, 179, 8, 0.3);
+  border: 1px solid rgba(245, 158, 11, 0.3);
 }
 
 .prototype-badge {
@@ -252,128 +333,27 @@ body {
   border-radius: 4px;
   font-size: 11px;
   font-weight: 600;
-  background: rgba(59, 130, 246, 0.12);
-  color: #93c5fd;
-  border: 1px solid rgba(59, 130, 246, 0.3);
+  background: rgba(56, 189, 248, 0.12);
+  color: #7dd3fc;
+  border: 1px solid rgba(56, 189, 248, 0.3);
 }
 
-/* ─── Leaflet Map Container Cleanup ──────────────────────── */
+/* ─── Leaflet Map Container ──────────────────────────────── */
 .leaflet-container {
-  background: #090d16 !important;
+  background: #080B10 !important;
   font-family: var(--font-sans);
 }
 
 .leaflet-popup-content-wrapper {
-  background: #0f172a !important;
-  color: #f8fafc !important;
+  background: #0D1219 !important;
+  color: #E6EDF3 !important;
   border-radius: 8px !important;
-  border: 1px solid #334155;
-  box-shadow: 0 10px 25px -5px rgba(0,0,0,0.5);
+  border: 1px solid #1D2733;
+  box-shadow: 0 10px 25px -5px rgba(0,0,0,0.7);
 }
 
 .leaflet-popup-tip {
-  background: #0f172a !important;
-}
-
-/* ─── Stranger Things Upside-Down Neon Flickering Theme ────── */
-@keyframes stranger-flicker {
-  0%, 100% {
-    opacity: 1;
-    filter: drop-shadow(0 0 8px rgba(255, 0, 60, 0.9));
-  }
-  32% {
-    opacity: 0.85;
-    filter: drop-shadow(0 0 4px rgba(255, 0, 60, 0.5));
-  }
-  34% {
-    opacity: 0.25;
-    filter: none;
-  }
-  36% {
-    opacity: 1;
-    filter: drop-shadow(0 0 12px rgba(255, 0, 60, 1));
-  }
-  68% {
-    opacity: 0.9;
-  }
-  70% {
-    opacity: 0.4;
-    filter: drop-shadow(0 0 2px rgba(255, 0, 60, 0.3));
-  }
-  72% {
-    opacity: 1;
-    filter: drop-shadow(0 0 15px rgba(255, 0, 60, 1));
-  }
-}
-
-@keyframes neon-pulse {
-  0%, 100% {
-    box-shadow: 0 0 15px rgba(255, 0, 60, 0.4), inset 0 0 15px rgba(255, 0, 60, 0.15);
-    border-color: rgba(255, 0, 60, 0.7);
-  }
-  50% {
-    box-shadow: 0 0 6px rgba(255, 0, 60, 0.15), inset 0 0 5px rgba(255, 0, 60, 0.05);
-    border-color: rgba(230, 0, 0, 0.3);
-  }
-}
-
-.stranger-flicker {
-  animation: stranger-flicker 3.5s infinite ease-in-out;
-}
-
-.stranger-glow-pulse {
-  animation: neon-pulse 2.5s infinite ease-in-out;
-}
-
-/* Stranger Things Upside-Down Global Overrides */
-.stranger-things-mode {
-  background-color: #040206 !important;
-  background-image: radial-gradient(circle at 50% 10%, #3a000f 0%, #060209 85%) !important;
-  color: #fecdd3 !important;
-}
-
-.stranger-things-mode h1,
-.stranger-things-mode h2,
-.stranger-things-mode .stranger-title {
-  color: #ff2a55 !important;
-  text-shadow: 0 0 10px rgba(255, 0, 60, 0.8), 0 0 20px rgba(230, 0, 0, 0.6) !important;
-  letter-spacing: 0.05em;
-}
-
-.stranger-things-mode .glass-card {
-  background: rgba(15, 3, 10, 0.85) !important;
-  border: 1px solid rgba(255, 0, 60, 0.45) !important;
-  box-shadow: 0 0 20px -2px rgba(255, 0, 60, 0.25) !important;
-}
-
-.stranger-things-mode .glass-card:hover {
-  border-color: rgba(255, 0, 60, 0.8) !important;
-  box-shadow: 0 0 30px 2px rgba(255, 0, 60, 0.45) !important;
-}
-
-.stranger-things-mode .btn-primary {
-  background: linear-gradient(135deg, #e60039 0%, #990026 100%) !important;
-  border-color: rgba(255, 102, 136, 0.4) !important;
-  box-shadow: 0 0 15px rgba(255, 0, 60, 0.4) !important;
-}
-
-.stranger-things-mode .btn-primary:hover {
-  background: linear-gradient(135deg, #ff1a53 0%, #cc0033 100%) !important;
-  box-shadow: 0 0 25px rgba(255, 0, 60, 0.7) !important;
-}
-
-.stranger-things-mode .prototype-badge {
-  background: rgba(255, 0, 60, 0.15) !important;
-  color: #ff859c !important;
-  border-color: rgba(255, 0, 60, 0.4) !important;
-  animation: stranger-flicker 2.8s infinite ease-in-out;
-}
-
-.stranger-things-mode .sidebar-item.active {
-  background: rgba(255, 0, 60, 0.2) !important;
-  color: #ff6688 !important;
-  border-left-color: #ff003c !important;
-  box-shadow: inset 0 0 12px rgba(255, 0, 60, 0.3) !important;
+  background: #0D1219 !important;
 }
 
 /* ─── Sidebar Item Styling ─────────────────────────────── */
@@ -383,7 +363,7 @@ body {
   gap: 10px;
   padding: 8px 12px;
   border-radius: 6px;
-  color: #94a3b8;
+  color: #8B98A8;
   font-size: 13px;
   font-weight: 500;
   transition: all 0.15s ease;
@@ -393,14 +373,163 @@ body {
 }
 
 .sidebar-item:hover {
-  background: rgba(30, 41, 59, 0.6);
-  color: #f1f5f9;
+  background: #111821;
+  color: #E6EDF3;
 }
 
 .sidebar-item.active {
-  background: rgba(37, 99, 235, 0.15);
-  color: #60a5fa;
+  background: #111821;
+  color: #38BDF8;
   font-weight: 600;
-  border-left-color: #3b82f6;
+  border-left-color: #38BDF8;
+  box-shadow: inset 0 0 12px rgba(56, 189, 248, 0.1);
 }
+
+/* ─── Tactical Stranger Things Theme Overrides ─────────── */
+@keyframes stranger-flicker {
+  0%, 100% { opacity: 1; filter: drop-shadow(0 0 8px rgba(239, 68, 68, 0.8)); }
+  34% { opacity: 0.3; filter: none; }
+  36% { opacity: 1; filter: drop-shadow(0 0 12px rgba(239, 68, 68, 1)); }
+  70% { opacity: 0.4; }
+  72% { opacity: 1; }
+}
+
+.stranger-flicker {
+  animation: stranger-flicker 3.5s infinite ease-in-out;
+}
+
+.stranger-things-mode {
+  background-color: #050207 !important;
+  background-image: radial-gradient(circle at 50% 10%, #3a000f 0%, #050207 85%) !important;
+  color: #fecdd3 !important;
+}
+
+.stranger-things-mode h1,
+.stranger-things-mode h2,
+.stranger-things-mode .stranger-title {
+  color: #ef4444 !important;
+  text-shadow: 0 0 10px rgba(239, 68, 68, 0.8) !important;
+}
+
+.stranger-things-mode .glass-card,
+.stranger-things-mode .command-card {
+  background: rgba(15, 3, 10, 0.9) !important;
+  border: 1px solid rgba(239, 68, 68, 0.4) !important;
+}
+
+.stranger-things-mode .sidebar-item.active {
+  background: rgba(239, 68, 68, 0.2) !important;
+  color: #f87171 !important;
+  border-left-color: #ef4444 !important;
+}
+
+/* ─── ULTRA-BRIGHT DOOMSDAY NEON GREEN SYSTEM ──────────── */
+@keyframes neon-green-pulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 6px #00FF66) drop-shadow(0 0 16px rgba(0, 255, 102, 0.8));
+    opacity: 1;
+  }
+  50% {
+    filter: drop-shadow(0 0 14px #00FF66) drop-shadow(0 0 28px rgba(0, 255, 102, 1)) drop-shadow(0 0 45px rgba(0, 255, 102, 0.6));
+    opacity: 0.95;
+  }
+}
+
+@keyframes neon-green-flicker {
+  0%, 18%, 22%, 25%, 53%, 57%, 100% {
+    filter: drop-shadow(0 0 8px #00FF66) drop-shadow(0 0 22px rgba(0, 255, 102, 0.9));
+    opacity: 1;
+  }
+  20%, 24%, 55% {
+    filter: drop-shadow(0 0 2px #00FF66);
+    opacity: 0.6;
+  }
+}
+
+@keyframes neon-green-breathe {
+  0%, 100% {
+    text-shadow: 0 0 8px #00FF66, 0 0 20px rgba(0, 255, 102, 0.8), 0 0 35px rgba(0, 255, 102, 0.4);
+    color: #FFFFFF;
+  }
+  50% {
+    text-shadow: 0 0 15px #00FF66, 0 0 35px rgba(0, 255, 102, 1), 0 0 60px rgba(0, 255, 102, 0.7);
+    color: #E6FFF0;
+  }
+}
+
+@keyframes radar-sweep {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes scanline-move {
+  0% { top: -100%; }
+  100% { top: 200%; }
+}
+
+@keyframes border-glow-green {
+  0%, 100% { 
+    border-color: rgba(0, 255, 102, 0.5); 
+    box-shadow: 0 0 12px rgba(0, 255, 102, 0.25), inset 0 0 12px rgba(0, 255, 102, 0.05); 
+  }
+  50% { 
+    border-color: rgba(0, 255, 102, 0.95); 
+    box-shadow: 0 0 24px rgba(0, 255, 102, 0.55), inset 0 0 24px rgba(0, 255, 102, 0.12); 
+  }
+}
+
+/* Vivid Neon Green Pulsing Icon */
+.neon-icon-green {
+  color: #00FF66 !important;
+  animation: neon-green-pulse 2s infinite ease-in-out;
+}
+
+/* Vivid Neon Green Flickering Icon */
+.neon-icon-flicker {
+  color: #00FF66 !important;
+  animation: neon-green-flicker 3s infinite;
+}
+
+/* Vivid Neon Green Text Glow */
+.neon-text-green {
+  animation: neon-green-breathe 2.5s infinite ease-in-out;
+}
+
+/* Radar sweep rotation */
+.radar-spin {
+  animation: radar-sweep 3s linear infinite;
+}
+
+/* High-contrast neon green border card */
+.neon-card-green {
+  border: 1px solid rgba(0, 255, 102, 0.6) !important;
+  animation: border-glow-green 2.5s infinite ease-in-out;
+}
+
+/* High-voltage live neon green status dot */
+.live-pulse-neon-green {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background-color: #00FF66;
+  box-shadow: 0 0 10px #00FF66, 0 0 22px rgba(0, 255, 102, 0.9);
+  animation: pulse-soft 1.2s infinite ease-in-out;
+}
+
+/* High-visibility command card */
+.command-card-bright {
+  background: #0E1622;
+  border: 1px solid #22344B;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.command-card-bright:hover {
+  border-color: #00FF66;
+  box-shadow: 0 12px 40px rgba(0, 255, 102, 0.25), 0 0 15px rgba(0, 255, 102, 0.15);
+  transform: translateY(-2px);
+}
+
 

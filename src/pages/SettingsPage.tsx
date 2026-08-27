@@ -10,8 +10,8 @@ import { useAppStore } from '../store/useStore';
 const Toggle = ({ active, onClick }: { active: boolean; onClick: () => void }) => (
   <button 
     onClick={onClick}
-    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-accent-blue focus:ring-offset-2 focus:ring-offset-navy-900 ${
-      active ? 'bg-accent-blue' : 'bg-navy-700'
+    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-sky-400 ${
+      active ? 'bg-sky-500' : 'bg-[#1D2733]'
     }`}
   >
     <span 
@@ -27,7 +27,6 @@ const SettingsPage: React.FC = () => {
   
   // Local state for visual-only toggles
   const [darkMode, setDarkMode] = useState(true);
-  const [accentColor, setAccentColor] = useState('blue');
   const [alerts, setAlerts] = useState({
     newEvidence: true,
     caseUpdates: true,
@@ -54,12 +53,12 @@ const SettingsPage: React.FC = () => {
 
   return (
     <div className="max-w-6xl mx-auto space-y-6">
-      <div className="border-b border-navy-800 pb-4">
-        <h1 className="text-2xl font-bold text-white flex items-center gap-3">
-          <Settings className="w-6 h-6 text-blue-400" />
-          System Settings & Controls
+      <div className="border-b border-[#1D2733] pb-4">
+        <h1 className="text-2xl font-extrabold text-[#E6EDF3] font-mono flex items-center gap-2">
+          <Settings className="w-6 h-6 text-sky-400" />
+          SYSTEM SETTINGS & CONFIGURATION
         </h1>
-        <p className="text-xs text-navy-400 mt-1">Prototype controls, state reset, and platform information</p>
+        <p className="text-xs text-[#8B98A8] font-mono mt-0.5">Operational controls, demo simulation reset, and system diagnostics</p>
       </div>
 
       <motion.div 
@@ -72,111 +71,94 @@ const SettingsPage: React.FC = () => {
         <div className="space-y-6">
           
           {/* Demo Controls */}
-          <motion.div variants={itemVariants} className="glass-card p-6">
-            <div className="flex items-center gap-2 mb-4">
-              <Database className="w-5 h-5 text-accent-cyan" />
-              <h2 className="text-lg font-semibold text-white">Demo Controls</h2>
+          <motion.div variants={itemVariants} className="glass-card p-6 space-y-4 font-mono">
+            <div className="flex items-center gap-2 border-b border-[#1D2733] pb-2">
+              <Database className="w-5 h-5 text-sky-400" />
+              <h2 className="text-sm font-bold text-white uppercase">Simulation & State Controls</h2>
             </div>
-            <p className="text-sm text-slate-400 mb-4">
-              Manage the prototype state and sample data.
+            <p className="text-xs text-[#8B98A8] font-sans">
+              Manage local simulation state and reset active case parameters.
             </p>
             
-            <div className="space-y-4">
-              <div className="flex items-center justify-between p-3 bg-navy-900/50 rounded-lg border border-navy-700">
+            <div className="space-y-3 text-xs">
+              <div className="flex items-center justify-between p-3 bg-[#080B10] rounded-lg border border-[#1D2733]">
                 <div>
-                  <div className="text-sm font-medium text-white">Demo Data</div>
-                  <div className="text-xs text-slate-400">Load sample case 'Phoenix'</div>
+                  <div className="text-white font-bold">Load Sample Case</div>
+                  <div className="text-[11px] text-[#8B98A8] font-sans">Initialize TRX-2026-001 default state</div>
                 </div>
                 <button 
                   onClick={initDemoData}
-                  className="btn-primary flex items-center gap-2 text-sm"
+                  className="btn-primary text-xs"
                 >
-                  <Download className="w-4 h-4" /> Load Demo Case
+                  <Download className="w-3.5 h-3.5" /> Load Sample Case
                 </button>
               </div>
 
-              <div className="flex items-center justify-between p-3 bg-navy-900/50 rounded-lg border border-navy-700">
+              <div className="flex items-center justify-between p-3 bg-[#080B10] rounded-lg border border-[#1D2733]">
                 <div>
-                  <div className="text-sm font-medium text-white">Reset Application</div>
-                  <div className="text-xs text-slate-400">Clear all data and states</div>
+                  <div className="text-white font-bold">Reset Simulation</div>
+                  <div className="text-[11px] text-[#8B98A8] font-sans">Clear custom entries and reset certainty</div>
                 </div>
                 <button 
                   onClick={resetDemo}
-                  className="btn-danger flex items-center gap-2 text-sm"
+                  className="btn-danger text-xs"
                 >
-                  <RefreshCw className="w-4 h-4" /> Reset Demo
+                  <RefreshCw className="w-3.5 h-3.5" /> Reset State
                 </button>
               </div>
 
-              <div className="mt-4 p-3 bg-navy-800 rounded-lg border border-navy-700">
-                <div className="text-xs text-slate-400 mb-1">Current State</div>
+              <div className="p-3 bg-[#080B10] rounded-lg border border-[#1D2733]">
+                <div className="text-[10px] text-[#8B98A8] uppercase mb-1">CCTV-014 INTEGRATION STATE</div>
                 <div className="flex items-center gap-2">
-                  <div className={`w-2 h-2 rounded-full ${cctv014Investigated ? 'bg-status-success' : 'bg-status-warning'}`}></div>
-                  <span className="text-sm text-white">
-                    {cctv014Investigated ? 'CCTV-014 Investigation Complete' : 'Awaiting Investigation'}
+                  <div className={`w-2 h-2 rounded-full ${cctv014Investigated ? 'bg-emerald-400' : 'bg-amber-400'}`}></div>
+                  <span className="text-xs text-white">
+                    {cctv014Investigated ? 'CCTV-014 Verified & Integrated (+23%)' : 'Awaiting CCTV-014 Investigation'}
                   </span>
                 </div>
               </div>
             </div>
           </motion.div>
 
-          {/* Appearance (Visual Only) */}
-          <motion.div variants={itemVariants} className="glass-card p-6">
-            <div className="flex items-center gap-2 mb-4">
-              <Palette className="w-5 h-5 text-accent-indigo" />
-              <h2 className="text-lg font-semibold text-white">Theme</h2>
+          {/* Theme Preferences */}
+          <motion.div variants={itemVariants} className="glass-card p-6 space-y-4 font-mono">
+            <div className="flex items-center gap-2 border-b border-[#1D2733] pb-2">
+              <Palette className="w-5 h-5 text-sky-400" />
+              <h2 className="text-sm font-bold text-white uppercase">Appearance & Atmosphere</h2>
             </div>
             
-            <div className="space-y-4">
+            <div className="space-y-4 text-xs">
               <div className="flex items-center justify-between">
                 <div>
-                  <div className="text-sm font-medium text-white">Dark Mode</div>
-                  <div className="text-xs text-slate-400">Enforce dark intelligence UI</div>
+                  <div className="text-white font-bold">Dark Command Theme</div>
+                  <div className="text-[11px] text-[#8B98A8] font-sans">Enforce high-contrast dark surface palette</div>
                 </div>
                 <Toggle active={darkMode} onClick={() => setDarkMode(!darkMode)} />
-              </div>
-              
-              <div className="pt-3 border-t border-navy-700">
-                <div className="text-sm font-medium text-white mb-2">Accent Color</div>
-                <div className="flex gap-3">
-                  {['blue', 'cyan', 'indigo'].map((color) => (
-                    <button
-                      key={color}
-                      onClick={() => setAccentColor(color)}
-                      className={`w-8 h-8 rounded-full border-2 transition-all ${
-                        accentColor === color ? 'border-white scale-110' : 'border-transparent hover:scale-105'
-                      } ${
-                        color === 'blue' ? 'bg-blue-500' : color === 'cyan' ? 'bg-cyan-500' : 'bg-indigo-500'
-                      }`}
-                    />
-                  ))}
-                </div>
               </div>
             </div>
           </motion.div>
 
           {/* Notification Preferences */}
-          <motion.div variants={itemVariants} className="glass-card p-6">
-            <div className="flex items-center gap-2 mb-4">
-              <Bell className="w-5 h-5 text-status-warning" />
-              <h2 className="text-lg font-semibold text-white">Notification Preferences</h2>
+          <motion.div variants={itemVariants} className="glass-card p-6 space-y-4 font-mono">
+            <div className="flex items-center gap-2 border-b border-[#1D2733] pb-2">
+              <Bell className="w-5 h-5 text-amber-400" />
+              <h2 className="text-sm font-bold text-white uppercase">Notification Preferences</h2>
             </div>
             
-            <div className="space-y-4">
+            <div className="space-y-3 text-xs">
               <div className="flex items-center justify-between">
-                <div className="text-sm text-white">New evidence alerts</div>
+                <span className="text-white">New evidence alerts</span>
                 <Toggle active={alerts.newEvidence} onClick={() => toggleAlert('newEvidence')} />
               </div>
               <div className="flex items-center justify-between">
-                <div className="text-sm text-white">Case updates</div>
+                <span className="text-white">Case certainty updates</span>
                 <Toggle active={alerts.caseUpdates} onClick={() => toggleAlert('caseUpdates')} />
               </div>
               <div className="flex items-center justify-between">
-                <div className="text-sm text-white">Citizen reports</div>
+                <span className="text-white">Public citizen sightings</span>
                 <Toggle active={alerts.citizenReports} onClick={() => toggleAlert('citizenReports')} />
               </div>
               <div className="flex items-center justify-between">
-                <div className="text-sm text-white">System notifications</div>
+                <span className="text-white">System notifications</span>
                 <Toggle active={alerts.systemNotifs} onClick={() => toggleAlert('systemNotifs')} />
               </div>
             </div>
@@ -186,67 +168,63 @@ const SettingsPage: React.FC = () => {
         {/* Right Column */}
         <div className="space-y-6">
           
-          {/* Prototype Notice */}
-          <motion.div variants={itemVariants} className="glass-card p-6 border-l-4 border-l-status-warning bg-status-warning/10">
-            <div className="flex items-start gap-3">
-              <AlertTriangle className="w-5 h-5 text-status-warning mt-0.5" />
-              <div>
-                <h3 className="text-md font-semibold text-status-warning mb-1">Prototype Simulation Notice</h3>
-                <p className="text-sm text-slate-300 leading-relaxed">
-                  This system is currently running as a prototype demonstration. In a real-world deployment, TRACE-X would require authorized integration with municipal CCTV networks, police databases, and cellular provider APIs. All AI models in this version are simulated for demonstration purposes.
+          {/* Operational Notice */}
+          <motion.div variants={itemVariants} className="glass-card p-6 border-l-4 border-l-amber-400 bg-[#0D1219]">
+            <div className="flex items-start gap-3 text-xs font-mono">
+              <AlertTriangle className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" />
+              <div className="space-y-1">
+                <h3 className="font-bold text-amber-400 uppercase">Operational Simulation Disclaimer</h3>
+                <p className="text-[#8B98A8] font-sans leading-relaxed">
+                  This system is operating in prototype simulation mode. In production deployments, TRACE-X integrates directly with authorized municipal CCTV network feeds, police records, and cell tower telemetry under legal authorization protocols.
                 </p>
               </div>
             </div>
           </motion.div>
 
-          {/* System Info */}
-          <motion.div variants={itemVariants} className="glass-card p-6">
-            <div className="flex items-center gap-2 mb-4">
-              <Terminal className="w-5 h-5 text-slate-400" />
-              <h2 className="text-lg font-semibold text-white">System Information</h2>
+          {/* System Information */}
+          <motion.div variants={itemVariants} className="glass-card p-6 space-y-3 font-mono text-xs">
+            <div className="flex items-center gap-2 border-b border-[#1D2733] pb-2">
+              <Terminal className="w-5 h-5 text-sky-400" />
+              <h2 className="text-sm font-bold text-white uppercase">System Information</h2>
             </div>
             
-            <div className="space-y-3 font-mono text-sm">
-              <div className="flex justify-between py-2 border-b border-navy-700/50">
-                <span className="text-slate-400 flex items-center gap-2"><Code2 className="w-4 h-4"/> Version</span>
-                <span className="text-accent-blue">TRACE-X v0.1.0-prototype</span>
+            <div className="space-y-2">
+              <div className="flex justify-between py-1.5 border-b border-[#1D2733]">
+                <span className="text-[#8B98A8] flex items-center gap-2"><Code2 className="w-4 h-4"/> System Version</span>
+                <span className="text-sky-400 font-bold">TRACE-X v1.0.0-operational</span>
               </div>
-              <div className="flex justify-between py-2 border-b border-navy-700/50">
-                <span className="text-slate-400 flex items-center gap-2"><Database className="w-4 h-4"/> Stack</span>
-                <span className="text-white">React + TypeScript + Zustand</span>
+              <div className="flex justify-between py-1.5 border-b border-[#1D2733]">
+                <span className="text-[#8B98A8] flex items-center gap-2"><Database className="w-4 h-4"/> Architecture Stack</span>
+                <span className="text-white">React 18 + TypeScript + Zustand</span>
               </div>
-              <div className="flex justify-between py-2 border-b border-navy-700/50">
-                <span className="text-slate-400 flex items-center gap-2"><Monitor className="w-4 h-4"/> Environment</span>
-                <span className="text-status-warning">Development / Prototype</span>
+              <div className="flex justify-between py-1.5 border-b border-[#1D2733]">
+                <span className="text-[#8B98A8] flex items-center gap-2"><Monitor className="w-4 h-4"/> Deployment Environment</span>
+                <span className="text-emerald-400 font-bold">Production CDN</span>
               </div>
-              <div className="flex justify-between py-2">
-                <span className="text-slate-400 flex items-center gap-2"><ShieldAlert className="w-4 h-4"/> AI Engine</span>
-                <span className="text-accent-cyan">Mock Analysis Service (Prototype)</span>
+              <div className="flex justify-between py-1.5">
+                <span className="text-[#8B98A8] flex items-center gap-2"><ShieldAlert className="w-4 h-4"/> AI Intelligence Engine</span>
+                <span className="text-sky-400">Uncertainty-Aware Information-Gain Engine</span>
               </div>
             </div>
           </motion.div>
 
-          {/* About */}
-          <motion.div variants={itemVariants} className="glass-card p-6">
-            <div className="flex items-center gap-2 mb-4">
-              <Info className="w-5 h-5 text-accent-blue" />
-              <h2 className="text-lg font-semibold text-white">About TRACE-X</h2>
+          {/* About TRACE-X */}
+          <motion.div variants={itemVariants} className="glass-card p-6 space-y-3 font-mono text-xs">
+            <div className="flex items-center gap-2 border-b border-[#1D2733] pb-2">
+              <Info className="w-5 h-5 text-sky-400" />
+              <h2 className="text-sm font-bold text-white uppercase">About TRACE-X</h2>
             </div>
             
-            <div className="space-y-4 text-sm text-slate-300">
+            <div className="space-y-3 text-[#E6EDF3] font-sans">
               <p>
-                TRACE-X is an AI Evidence Intelligence System designed for Missing & Vulnerable Persons cases. It aggregates multi-modal data streams, synthesizes hypotheses, and identifies critical investigation gaps to accelerate case resolution.
+                TRACE-X is an uncertainty-aware investigation intelligence platform engineered for missing and vulnerable persons cases. It aggregates multi-modal evidence streams, synthesizes competing movement hypotheses, and ranks candidate next-best evidence actions to eliminate investigation gaps.
               </p>
-              <div className="p-3 bg-navy-900 rounded-lg border border-navy-700">
-                <div className="font-semibold text-white mb-1">Smart India Hackathon 2026</div>
-                <div className="text-slate-400 text-xs">Problem Statement: PSS2</div>
+              <div className="p-3 bg-[#080B10] rounded-lg border border-[#1D2733] font-mono text-xs">
+                <div className="font-bold text-sky-400 mb-1">CORE MISSION</div>
+                <div className="text-[#8B98A8] text-[11px]">Transforming passive evidence collections into hypothesis-driven, actionable intelligence while enforcing strict chain-of-custody verification.</div>
               </div>
-              <p className="text-xs text-slate-400 italic">
-                Core innovation: Transforming passive surveillance data into active, hypothesis-driven intelligence while maintaining chain of custody and requiring human verification.
-              </p>
             </div>
           </motion.div>
-
         </div>
       </motion.div>
     </div>

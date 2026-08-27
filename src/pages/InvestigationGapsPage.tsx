@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { AlertTriangle, Clock, Search, ChevronRight, HelpCircle, AlertCircle, SearchX } from 'lucide-react';
+import { AlertTriangle, ChevronRight } from 'lucide-react';
 import { useAppStore } from '../store/useStore';
 
 export default function InvestigationGapsPage() {
@@ -31,159 +31,153 @@ export default function InvestigationGapsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center gap-4 border-b border-navy-700/50 pb-6">
-        <div className="p-3 bg-amber-500/20 rounded-lg text-amber-400">
-          <AlertTriangle className="w-8 h-8" />
-        </div>
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#1D2733] pb-4">
         <div>
-          <h1 className="text-3xl font-bold font-sans tracking-tight text-white flex items-center gap-2">
-            What Don't We Know Yet?
+          <h1 className="text-2xl font-extrabold text-[#E6EDF3] tracking-tight font-mono flex items-center gap-2">
+            <AlertTriangle className="text-amber-400 w-6 h-6" />
+            INVESTIGATION UNCERTAINTY
           </h1>
-          <p className="text-navy-400 text-base">Missing timeline periods, unverified locations, and clues we need to collect</p>
+          <p className="text-xs text-[#8B98A8] mt-0.5 font-mono">
+            TIMELINE GAPS & MOVEMENT UNCERTAINTY MATRIX FOR <span className="text-white font-semibold">{personName.toUpperCase()}</span>
+          </p>
         </div>
+
+        <span className="prototype-badge font-mono">
+          {cctv014Investigated ? 'UNCERTAINTY REDUCED' : 'CRITICAL GAP DETECTED'}
+        </span>
       </div>
 
       <motion.div variants={containerVariants} initial="hidden" animate="show" className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
+        {/* Main Uncertainty Box */}
         <div className="lg:col-span-2 space-y-6">
           {criticalGap && (
-            <motion.div variants={itemVariants} className="glass-card border-amber-500/50 bg-amber-500/10 p-6 relative overflow-hidden">
-              <div className="absolute top-0 right-0 p-4 opacity-10">
-                <AlertTriangle className="w-32 h-32 text-amber-400" />
-              </div>
-              <div className="relative z-10 space-y-4">
-                <div className="flex items-center gap-2 text-amber-400 font-bold text-xl mb-2">
-                  <AlertCircle className="w-6 h-6" />
-                  ⚠️ CRITICAL MISSING TIMELINE GAP
+            <motion.div variants={itemVariants} className="glass-card border-amber-500/40 bg-[#0D1219] p-6 space-y-5 relative overflow-hidden">
+              <div className="flex items-center justify-between flex-wrap gap-4 border-b border-[#1D2733] pb-4">
+                <div>
+                  <span className="text-[10px] font-mono uppercase tracking-widest text-amber-400 font-bold block mb-1">
+                    PRIMARY TIMELINE GAP
+                  </span>
+                  <h2 className="text-xl font-extrabold text-white font-mono">Critical Evidence Gap</h2>
                 </div>
 
-                <p className="text-white text-base">
-                  We have no verified footage or sightings of {personName} during this 13-minute window:
+                <div className="bg-[#080B10] p-3 rounded-lg border border-[#1D2733] text-right font-mono">
+                  <div className="text-[10px] text-[#8B98A8] uppercase">CURRENT UNCERTAINTY</div>
+                  <motion.div
+                    animate={{ opacity: [1, 0.6, 1] }}
+                    transition={{ repeat: Infinity, duration: 2.5 }}
+                    className="text-3xl font-extrabold text-amber-400"
+                  >
+                    {cctv014Investigated ? '28%' : '68%'}
+                  </motion.div>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <p className="text-xs text-[#E6EDF3]">
+                  No reliable movement evidence detected for {personName} during this window:
                 </p>
 
-                <div className="flex items-center gap-4 bg-black/40 p-4 rounded-lg font-mono text-xl border border-white/5">
-                  <div className="text-white/80">10:18 AM <span className="text-xs font-sans text-navy-400">(Central Market)</span></div>
-                  <ChevronRight className="w-6 h-6 text-white/40" />
-                  <div className="text-white/80">10:31 AM <span className="text-xs font-sans text-navy-400">(Metro Gate B)</span></div>
+                <div className="flex items-center justify-between gap-3 bg-[#080B10] p-4 rounded-lg font-mono text-sm border border-[#1D2733]">
+                  <div className="text-white">10:18 AM <span className="text-xs text-[#8B98A8] block font-sans">(Central Market)</span></div>
+                  <ChevronRight className="w-5 h-5 text-amber-400 flex-shrink-0" />
+                  <div className="text-white">10:31 AM <span className="text-xs text-[#8B98A8] block font-sans">(Metro Gate B)</span></div>
                 </div>
 
-                <div className="flex items-center gap-4 mt-4">
-                  <span className="text-navy-300 uppercase text-xs tracking-wider font-semibold">Uncertainty Level:</span>
-                  <motion.div
-                    animate={{ opacity: [1, 0.5, 1] }}
-                    transition={{ repeat: Infinity, duration: 2 }}
-                    className="text-3xl font-bold text-amber-400 font-mono"
-                  >
-                    {cctv014Investigated ? '28% (Resolved)' : `${criticalGap.uncertainty}% (High)`}
-                  </motion.div>
+                <div className="p-3 bg-amber-500/10 border border-amber-500/30 rounded-lg text-xs text-amber-300 font-mono">
+                  ⚠ {cctv014Investigated ? 'Gap resolved via CCTV-014 footage.' : 'Uncertainty level: 68%. System cannot confirm transport vs on-foot movement.'}
+                </div>
+              </div>
+
+              {/* Numbered Missing Information List */}
+              <div className="pt-2 space-y-3 border-t border-[#1D2733]">
+                <h3 className="text-xs font-bold text-white font-mono uppercase tracking-wider">MISSING INFORMATION</h3>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 font-mono text-xs">
+                  <div className="bg-[#080B10] p-3 rounded-lg border border-[#1D2733] space-y-1">
+                    <span className="text-amber-400 font-bold text-sm block">01</span>
+                    <span className="text-white font-semibold">CCTV Transition</span>
+                    <p className="text-[11px] text-[#8B98A8] font-sans mt-1">Camera footage between market and transit hub</p>
+                  </div>
+
+                  <div className="bg-[#080B10] p-3 rounded-lg border border-[#1D2733] space-y-1">
+                    <span className="text-amber-400 font-bold text-sm block">02</span>
+                    <span className="text-white font-semibold">Transport Clue</span>
+                    <p className="text-[11px] text-[#8B98A8] font-sans mt-1">Bus ticket scan or vehicle plate detection</p>
+                  </div>
+
+                  <div className="bg-[#080B10] p-3 rounded-lg border border-[#1D2733] space-y-1">
+                    <span className="text-amber-400 font-bold text-sm block">03</span>
+                    <span className="text-white font-semibold">Witness Confirmation</span>
+                    <p className="text-[11px] text-[#8B98A8] font-sans mt-1">Eyewitness sighting at Bus Route 12 stop</p>
+                  </div>
                 </div>
               </div>
             </motion.div>
           )}
 
-          <motion.div variants={itemVariants} className="space-y-4">
-            <h2 className="text-lg font-bold flex items-center gap-2 text-white/90">
-              <Search className="w-5 h-5 text-accent-blue" />
-              What Clues Do Officers Need to Collect?
-            </h2>
+          {/* All Detected Gaps Table */}
+          <div className="glass-card p-5 space-y-3">
+            <h3 className="text-xs font-bold text-white uppercase tracking-wider pb-2 border-b border-[#1D2733] font-mono">ALL DETECTED INVESTIGATION GAPS</h3>
 
-            <div className="grid gap-4">
-              {criticalGap?.missingEvidence.map((evidence, idx) => (
-                <div key={idx} className="glass-card-light p-4 flex items-start gap-4 border-l-4 border-l-amber-500">
-                  <div className="w-8 h-8 rounded-full bg-navy-900 flex items-center justify-center font-mono text-blue-400 font-bold shrink-0">
-                    {idx + 1}
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-white">{evidence}</h4>
-                    <p className="text-navy-300 text-xs mt-1">Collecting this clue will solve the 13-minute missing timeline gap.</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </motion.div>
-
-          <motion.div variants={itemVariants} className="glass-card p-6">
-            <h3 className="text-base font-semibold mb-6 text-white">Timeline of Known Points & Missing Gap</h3>
-            <div className="relative h-20 flex items-center">
-              <div className="absolute left-0 right-0 h-1 bg-white/10 top-1/2 -translate-y-1/2"></div>
-
-              <div className="absolute left-[10%] top-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)] z-10" title="Market"></div>
-              <div className="absolute left-[10%] top-[calc(50%+16px)] text-xs text-navy-300 font-mono -translate-x-1/2">10:18 AM</div>
-
-              <div className="absolute left-[10%] right-[60%] h-1 bg-emerald-500 top-1/2 -translate-y-1/2"></div>
-
-              <div className="absolute left-[60%] top-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)] z-10" title="Metro Gate"></div>
-              <div className="absolute left-[60%] top-[calc(50%+16px)] text-xs text-navy-300 font-mono -translate-x-1/2">10:31 AM</div>
-
-              <div className="absolute left-[60%] right-[90%] h-1 bg-emerald-500 top-1/2 -translate-y-1/2"></div>
-
-              <div className="absolute left-[90%] top-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)] z-10" title="Bus Stand"></div>
-              <div className="absolute left-[90%] top-[calc(50%+16px)] text-xs text-navy-300 font-mono -translate-x-1/2">10:45 AM</div>
-
-              <div className="absolute left-[20%] right-[50%] h-4 top-1/2 -translate-y-1/2 rounded bg-amber-500/20 border border-amber-500/50 border-dashed z-0 flex items-center justify-center">
-                <span className="text-xs text-amber-400 font-bold bg-[#0f172a] px-2 rounded-full absolute -top-3">13-MIN GAP</span>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-
-        <div className="space-y-6">
-          <motion.div variants={itemVariants} className="glass-card border-indigo-500/30 bg-indigo-500/5 p-6 space-y-4">
-            <h2 className="text-lg font-bold flex items-center gap-2 text-indigo-400">
-              <SearchX className="w-5 h-5" />
-              Missing Clue Analysis
-            </h2>
-
-            <div className="space-y-4 text-xs">
-              <div className="bg-black/30 p-3 rounded border border-white/5 space-y-2 font-mono">
-                <div className="flex items-center justify-between">
-                  <span className="text-navy-400">Expected path:</span>
-                  <span className="text-navy-200">CCTV-007 → CCTV-009</span>
-                </div>
-                <div className="flex items-center justify-between text-amber-400">
-                  <span>Actual camera record:</span>
-                  <span>CCTV-007 → ? → CCTV-009</span>
-                </div>
-              </div>
-
-              <div>
-                <p className="text-navy-200 font-semibold mb-2 flex items-center gap-1"><HelpCircle className="w-4 h-4 text-indigo-400" /> Possible reasons why he was not captured:</p>
-                <ul className="space-y-2 text-navy-300 text-xs">
-                  <li className="flex gap-2"><span className="text-indigo-400 font-bold">1.</span> Walked on an alternate side street</li>
-                  <li className="flex gap-2"><span className="text-indigo-400 font-bold">2.</span> Camera had a blind spot on 4th Street</li>
-                  <li className="flex gap-2"><span className="text-indigo-400 font-bold">3.</span> Boarded a bus or auto rickshaw</li>
-                  <li className="flex gap-2"><span className="text-indigo-400 font-bold">4.</span> Hidden behind a large vehicle or crowd</li>
-                </ul>
-              </div>
-
-              <div className="text-[11px] text-navy-400 italic bg-black/20 p-2.5 rounded mt-4 border border-navy-700/40">
-                Note: Officers must manually confirm which reason is true.
-              </div>
-            </div>
-          </motion.div>
-
-          <motion.div variants={itemVariants} className="space-y-4">
-            <h3 className="font-semibold text-white">All Identified Case Gaps</h3>
             <div className="space-y-3">
               {sortedGaps.map((gap) => (
-                <div key={gap.id} className="glass-card-light p-4 space-y-2 border-l-2" style={{ borderLeftColor: gap.priority === 'critical' ? 'var(--color-status-danger)' : gap.priority === 'high' ? 'var(--color-status-warning)' : 'var(--color-accent-blue)' }}>
-                  <div className="flex justify-between items-start">
-                    <span className="font-medium text-white text-xs">{gap.description}</span>
-                    <span className={`text-[10px] px-2 py-0.5 rounded font-medium capitalize ${
-                      gap.priority === 'critical' ? 'bg-red-500/20 text-red-400 border border-red-500/30' :
-                      gap.priority === 'high' ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30' :
-                      'bg-blue-500/20 text-blue-400 border border-blue-500/30'
-                    }`}>{gap.priority}</span>
+                <div key={gap.id} className="bg-[#080B10] p-4 rounded-lg border border-[#1D2733] flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      <span className="font-mono text-sky-400 font-bold">{gap.id}</span>
+                      <span className="text-white font-semibold">{gap.description}</span>
+                    </div>
+                    <p className="text-[#8B98A8] font-mono">
+                      Window: {gap.timeStart || '10:18 AM'} — {gap.timeEnd || '10:31 AM'}
+                    </p>
                   </div>
-                  <div className="flex items-center gap-4 text-xs text-navy-300 font-mono">
-                    <span className="flex items-center gap-1"><Clock className="w-3 h-3 text-blue-400" /> {gap.timeStart ? new Date(gap.timeStart).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '10:18 AM'} - {gap.timeEnd ? new Date(gap.timeEnd).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '10:31 AM'}</span>
-                    <span>Uncertainty: {cctv014Investigated && gap.id === 'GAP-001' ? '28%' : `${gap.uncertainty}%`}</span>
+
+                  <div className="flex items-center gap-4 font-mono">
+                    <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${
+                      gap.priority === 'critical' ? 'badge-very-high' : gap.priority === 'high' ? 'badge-high' : 'badge-medium'
+                    }`}>
+                      {gap.priority}
+                    </span>
+                    <span className="text-amber-400 font-bold">{gap.uncertainty}%</span>
                   </div>
                 </div>
               ))}
             </div>
-          </motion.div>
+          </div>
+        </div>
 
+        {/* Explanations Panel */}
+        <div className="glass-card p-6 flex flex-col justify-between">
+          <div>
+            <h3 className="text-xs font-bold text-white uppercase tracking-wider mb-4 pb-2 border-b border-[#1D2733] font-mono">NEGATIVE EVIDENCE ANALYSIS</h3>
+
+            <div className="space-y-4 text-xs">
+              <div className="bg-[#080B10] p-3 rounded-lg border border-[#1D2733]">
+                <span className="text-[#8B98A8] block mb-1 font-mono">EXPECTED PATH</span>
+                <span className="text-white font-semibold">CCTV-007 → CCTV-009</span>
+              </div>
+
+              <div className="bg-[#080B10] p-3 rounded-lg border border-[#1D2733]">
+                <span className="text-[#8B98A8] block mb-1 font-mono">OBSERVED STREAM</span>
+                <span className="text-amber-400 font-semibold font-mono">CCTV-007 → [ UNKNOWN ] → CCTV-009</span>
+              </div>
+
+              <div className="space-y-2">
+                <span className="text-[#8B98A8] font-mono uppercase text-[11px]">Possible Explanations:</span>
+                <ol className="list-decimal pl-4 space-y-1.5 text-[#E6EDF3]">
+                  <li>Subject used an unmonitored alternate route.</li>
+                  <li>CCTV camera coverage gap in Sector 4.</li>
+                  <li>Vehicle/transport transition occurred.</li>
+                  <li>Temporary visual occlusion by crowd.</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+          <div className="text-[11px] text-[#8B98A8] pt-3 border-t border-[#1D2733] font-mono">
+            System catalogs possibilities without automatically enforcing claims.
+          </div>
         </div>
       </motion.div>
     </div>

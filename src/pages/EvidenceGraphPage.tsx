@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useAppStore } from '../store/useStore';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
 import {
-  Share2, Camera, User, Bus, MapPin, HelpCircle, Target,
-  Clock, AlertTriangle, ShieldAlert, Info
+  GitBranch, Camera, User, Bus, MapPin, HelpCircle, Target,
+  Clock, ShieldCheck
 } from 'lucide-react';
 import type { GraphNode } from '../types';
 
@@ -24,11 +24,11 @@ const getNodePos = (node: GraphNode, index: number) => {
 
 const getNodeColor = (state: string) => {
   switch (state) {
-    case 'confirmed': return '#10b981'; // emerald-500
-    case 'probable': return '#3b82f6'; // blue-500
-    case 'unverified': return '#f59e0b'; // amber-500
-    case 'contradictory': return '#ef4444'; // red-500
-    case 'unknown': default: return '#64748b'; // slate-500
+    case 'confirmed': return '#22C55E'; // green
+    case 'probable': return '#38BDF8';  // cyan
+    case 'unverified': return '#F59E0B';// amber
+    case 'contradictory': return '#EF4444';// red
+    case 'unknown': default: return '#4a5c75'; // dim grey
   }
 };
 
@@ -57,34 +57,31 @@ export default function EvidenceGraphPage() {
   }, [graphNodes]);
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="space-y-6"
-    >
-      <div className="flex justify-between items-start">
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#1D2733] pb-4">
         <div>
-          <h1 className="text-2xl font-bold text-white flex items-center gap-3">
-            <Share2 className="text-blue-400" />
-            Visual Clue Connection Map
+          <h1 className="text-2xl font-extrabold text-[#E6EDF3] tracking-tight font-mono flex items-center gap-2">
+            <GitBranch className="text-sky-400 w-6 h-6" />
+            VISUAL EVIDENCE GRAPH
           </h1>
-          <p className="text-navy-400 text-xs mt-1">
-            See how cameras, sightings, and missing timeline gaps connect together in real time
+          <p className="text-xs text-[#8B98A8] mt-0.5 font-mono">
+            REAL-TIME CLUE LINKAGE GRAPH • MULTI-CAMERA & SIGHTING MOVEMENT PATHS
           </p>
         </div>
-        <div className="flex items-center gap-2">
-          <span className="warning-label">Potential Lead — Human Verification Required</span>
-          <span className="prototype-badge">HERO SCREEN</span>
-        </div>
+
+        <span className="prototype-badge font-mono">
+          OPERATIONAL LINK GRAPH
+        </span>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Main SVG Canvas */}
-        <div className="lg:col-span-2 glass-card rounded-xl p-4 relative h-[600px] flex items-center justify-center overflow-hidden">
+        <div className="lg:col-span-2 glass-card rounded-xl p-4 relative h-[600px] flex items-center justify-center overflow-hidden bg-[#080B10]">
           <svg className="w-full h-full">
             <defs>
               <marker id="arrow" viewBox="0 0 10 10" refX="28" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-                <path d="M 0 0 L 10 5 L 0 10 z" fill="#475569" />
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="#334358" />
               </marker>
               <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
                 <feGaussianBlur stdDeviation="4" result="blur" />
@@ -113,7 +110,7 @@ export default function EvidenceGraphPage() {
                       y1={sourcePos.y}
                       x2={targetPos.x}
                       y2={targetPos.y}
-                      stroke={edge.dashed ? "#f59e0b" : "#475569"}
+                      stroke={edge.dashed ? "#F59E0B" : "#334358"}
                       strokeWidth={edge.dashed ? 2 : 2.5}
                       strokeDasharray={edge.dashed ? "6 6" : "none"}
                       markerEnd="url(#arrow)"
@@ -122,10 +119,10 @@ export default function EvidenceGraphPage() {
                       <text
                         x={(sourcePos.x + targetPos.x) / 2}
                         y={(sourcePos.y + targetPos.y) / 2 - 8}
-                        fill="#94a3b8"
+                        fill="#8B98A8"
                         fontSize="10"
                         textAnchor="middle"
-                        className="font-mono bg-navy-900 px-1"
+                        className="font-mono bg-[#0D1219] px-1"
                       >
                         {edge.label}
                       </text>
@@ -143,19 +140,15 @@ export default function EvidenceGraphPage() {
                 const isSelected = selectedNode?.id === node.id;
 
                 return (
-                  <motion.g
+                  <g
                     key={node.id}
-                    initial={{ scale: 0, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    exit={{ scale: 0, opacity: 0 }}
-                    transition={{ duration: 0.4, delay: i * 0.05 }}
                     transform={`translate(${pos.x}, ${pos.y})`}
                     onClick={() => setSelectedNode(node)}
                     style={{ cursor: 'pointer' }}
                   >
                     <circle
                       r={isSelected ? 24 : 20}
-                      fill="#1e293b"
+                      fill="#0D1219"
                       stroke={color}
                       strokeWidth={isSelected ? 3 : 2}
                       filter={isSelected ? "url(#glow)" : ""}
@@ -168,15 +161,15 @@ export default function EvidenceGraphPage() {
                     <g transform={`translate(0, ${isSelected ? 32 : 28})`} className="pointer-events-none">
                       <rect
                         x="-55" y="0" width="110" height="34" rx="4"
-                        fill="#0f172a"
+                        fill="#0D1219"
                         stroke={color}
                         strokeWidth="1"
-                        fillOpacity="0.9"
+                        fillOpacity="0.95"
                       />
-                      <text x="0" y="14" textAnchor="middle" fill="#e2e8f0" fontSize="11" fontWeight="600">
+                      <text x="0" y="14" textAnchor="middle" fill="#E6EDF3" fontSize="11" fontWeight="600">
                         {node.label}
                       </text>
-                      <text x="0" y="26" textAnchor="middle" fill="#94a3b8" fontSize="9">
+                      <text x="0" y="26" textAnchor="middle" fill="#8B98A8" fontSize="9" className="font-mono">
                         {node.sublabel ? node.sublabel.split('\n')[0] : 'Unknown'}
                       </text>
                     </g>
@@ -184,144 +177,111 @@ export default function EvidenceGraphPage() {
                     {node.confidence !== undefined && (
                       <g transform="translate(18, -18)" className="pointer-events-none">
                         <circle r="12" fill={color} />
-                        <text x="0" y="3" textAnchor="middle" fill="#fff" fontSize="9" fontWeight="bold">
+                        <text x="0" y="3" textAnchor="middle" fill="#fff" fontSize="9" fontStyle="bold" className="font-mono">
                           {node.confidence}%
                         </text>
                       </g>
                     )}
-                  </motion.g>
+                  </g>
                 );
               })}
             </AnimatePresence>
           </svg>
 
-          {/* Legend */}
-          <div className="absolute bottom-4 left-4 glass-card-light p-3 rounded-lg text-xs space-y-1.5 border border-white/5">
-            <div className="font-semibold text-slate-300 mb-1 uppercase tracking-wider text-[10px]">Node State</div>
-            <div className="flex items-center gap-2"><div className="w-2.5 h-2.5 rounded-full bg-emerald-500"></div> <span className="text-slate-400">Confirmed</span></div>
-            <div className="flex items-center gap-2"><div className="w-2.5 h-2.5 rounded-full bg-blue-500"></div> <span className="text-slate-400">Probable</span></div>
-            <div className="flex items-center gap-2"><div className="w-2.5 h-2.5 rounded-full bg-amber-500"></div> <span className="text-slate-400">Unverified</span></div>
-            <div className="flex items-center gap-2"><div className="w-2.5 h-2.5 rounded-full bg-red-500"></div> <span className="text-slate-400">Contradictory</span></div>
-            <div className="flex items-center gap-2"><div className="w-2.5 h-2.5 rounded-full bg-slate-500"></div> <span className="text-slate-400">Unknown</span></div>
+          {/* Node Legend */}
+          <div className="absolute bottom-4 left-4 bg-[#0D1219] p-3 rounded-lg text-xs space-y-1.5 border border-[#1D2733] font-mono">
+            <div className="font-semibold text-white mb-1 uppercase tracking-wider text-[10px]">Node States</div>
+            <div className="flex items-center gap-2"><div className="w-2.5 h-2.5 rounded-full bg-[#22C55E]"></div> <span className="text-[#8B98A8]">Confirmed</span></div>
+            <div className="flex items-center gap-2"><div className="w-2.5 h-2.5 rounded-full bg-[#38BDF8]"></div> <span className="text-[#8B98A8]">Potential</span></div>
+            <div className="flex items-center gap-2"><div className="w-2.5 h-2.5 rounded-full bg-[#F59E0B]"></div> <span className="text-[#8B98A8]">Uncertain</span></div>
+            <div className="flex items-center gap-2"><div className="w-2.5 h-2.5 rounded-full bg-[#EF4444]"></div> <span className="text-[#8B98A8]">Critical</span></div>
+            <div className="flex items-center gap-2"><div className="w-2.5 h-2.5 rounded-full bg-[#4a5c75]"></div> <span className="text-[#8B98A8]">Unknown</span></div>
           </div>
         </div>
 
-        {/* Detail Panel */}
-        <div className="glass-card rounded-xl p-5 flex flex-col h-[600px] overflow-y-auto">
-          <h2 className="text-lg font-semibold text-slate-200 mb-4 border-b border-white/10 pb-2">Node Details</h2>
+        {/* Node Detail Panel */}
+        <div className="glass-card rounded-xl p-5 flex flex-col h-[600px] overflow-y-auto space-y-4">
+          <h2 className="text-sm font-bold text-white uppercase tracking-wider border-b border-[#1D2733] pb-2 font-mono">NODE INTELLIGENCE DETAIL</h2>
 
           {selectedNode ? (
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={selectedNode.id}
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                className="space-y-5"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="p-3 rounded-lg bg-slate-800 border" style={{ borderColor: getNodeColor(selectedNode.state) }}>
-                    {getNodeIcon(selectedNode.type || 'unknown', selectedNode.state)}
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-slate-100 text-lg">{selectedNode.label}</h3>
-                    <div className="text-sm text-slate-400 font-mono">{selectedNode.id}</div>
+            <div className="space-y-4 text-xs font-mono">
+              <div className="flex items-center gap-3">
+                <div className="p-3 rounded-lg bg-[#080B10] border" style={{ borderColor: getNodeColor(selectedNode.state) }}>
+                  {getNodeIcon(selectedNode.type || 'unknown', selectedNode.state)}
+                </div>
+                <div>
+                  <h3 className="font-bold text-white text-base font-mono">{selectedNode.label}</h3>
+                  <div className="text-xs text-sky-400">{selectedNode.id}</div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div className="bg-[#080B10] p-3 rounded-lg border border-[#1D2733]">
+                  <div className="text-[10px] text-[#8B98A8] uppercase mb-1">State</div>
+                  <div className="capitalize font-medium flex items-center gap-1.5" style={{ color: getNodeColor(selectedNode.state) }}>
+                    <div className="w-2 h-2 rounded-full" style={{ backgroundColor: getNodeColor(selectedNode.state) }}></div>
+                    {selectedNode.state}
                   </div>
                 </div>
-
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="bg-slate-900/50 p-3 rounded-lg border border-white/5">
-                    <div className="text-xs text-slate-500 uppercase tracking-wider mb-1">State</div>
-                    <div className="capitalize font-medium flex items-center gap-1.5" style={{ color: getNodeColor(selectedNode.state) }}>
-                      <div className="w-2 h-2 rounded-full" style={{ backgroundColor: getNodeColor(selectedNode.state) }}></div>
-                      {selectedNode.state}
-                    </div>
-                  </div>
-                  <div className="bg-slate-900/50 p-3 rounded-lg border border-white/5">
-                    <div className="text-xs text-slate-500 uppercase tracking-wider mb-1">Confidence</div>
-                    <div className="font-bold text-slate-200">{selectedNode.confidence || 0}%</div>
-                  </div>
+                <div className="bg-[#080B10] p-3 rounded-lg border border-[#1D2733]">
+                  <div className="text-[10px] text-[#8B98A8] uppercase mb-1">Confidence</div>
+                  <div className="font-bold text-white text-sm">{selectedNode.confidence || 0}%</div>
                 </div>
+              </div>
 
-                <div className="space-y-3 pt-2">
-                  <div className="flex items-start gap-2 text-sm">
-                    <Clock className="w-4 h-4 text-slate-500 mt-0.5 shrink-0" />
-                    <div>
-                      <div className="text-slate-500 text-xs uppercase tracking-wider">Sublabel</div>
-                      <div className="text-slate-300 font-mono">{selectedNode.sublabel || 'N/A'}</div>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-2 text-sm">
-                    <MapPin className="w-4 h-4 text-slate-500 mt-0.5 shrink-0" />
-                    <div>
-                      <div className="text-slate-500 text-xs uppercase tracking-wider">Evidence ID</div>
-                      <div className="text-slate-300">{selectedNode.evidenceId || 'N/A'}</div>
-                    </div>
-                  </div>
+              <div className="space-y-2 bg-[#080B10] p-3 rounded-lg border border-[#1D2733]">
+                <div className="flex items-center gap-2">
+                  <Clock className="w-4 h-4 text-[#8B98A8]" />
+                  <span>Sublabel: <strong className="text-white">{selectedNode.sublabel || 'N/A'}</strong></span>
                 </div>
+                <div className="flex items-center gap-2">
+                  <MapPin className="w-4 h-4 text-[#8B98A8]" />
+                  <span>Evidence Ref: <strong className="text-sky-400">{selectedNode.evidenceId || 'N/A'}</strong></span>
+                </div>
+              </div>
 
-                {selectedNode.state === 'unknown' && (
-                  <div className="mt-4 p-3 bg-amber-500/10 border border-amber-500/20 rounded-lg flex items-start gap-2">
-                    <AlertTriangle className="w-5 h-5 text-amber-500 shrink-0" />
-                    <div className="text-sm text-amber-200/80">
-                      <strong>Critical Gap.</strong> This transition requires next best evidence investigation.
-                    </div>
-                  </div>
-                )}
-
-                {selectedNode.type === 'search_zone' && (
-                  <div className="mt-4 p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg flex items-start gap-2">
-                    <Info className="w-5 h-5 text-blue-400 shrink-0" />
-                    <div className="text-sm text-blue-200/80">
-                      <strong>Candidate Search Zone.</strong> Generated via predictive trajectory modeling.
-                    </div>
-                  </div>
-                )}
-              </motion.div>
-            </AnimatePresence>
+              {selectedNode.state === 'unknown' && (
+                <div className="p-3 bg-amber-500/10 border border-amber-500/30 rounded-lg text-amber-300 space-y-1">
+                  <strong>Critical Gap:</strong> Needs next best evidence verification.
+                </div>
+              )}
+            </div>
           ) : (
-            <div className="flex-1 flex flex-col items-center justify-center text-slate-500 space-y-3">
-              <Share2 className="w-12 h-12 opacity-20" />
-              <div className="text-sm">Click any node to view intelligence detail</div>
+            <div className="flex-1 flex flex-col items-center justify-center text-[#8B98A8] space-y-2">
+              <GitBranch className="w-8 h-8 opacity-40" />
+              <div className="text-xs font-mono">Select a node on the graph to view intelligence details</div>
             </div>
           )}
         </div>
       </div>
 
-      {/* Competing Hypotheses Section */}
-      <div className="glass-card p-6 rounded-xl">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-lg font-bold text-white flex items-center gap-2">
-            <ShieldAlert className="text-amber-400" />
-            Competing Trajectory Hypotheses
+      {/* Competing Trajectory Hypotheses Section */}
+      <div className="glass-card p-5 space-y-3">
+        <div className="flex justify-between items-center pb-2 border-b border-[#1D2733]">
+          <h2 className="text-sm font-bold text-white uppercase tracking-wider font-mono flex items-center gap-2">
+            <ShieldCheck className="text-sky-400 w-4 h-4" />
+            COMPETING TRAJECTORY HYPOTHESES
           </h2>
-          <span className="text-xs text-navy-400">Multiple active movement paths</span>
+          <span className="text-xs text-[#8B98A8] font-mono">3 CANDIDATE PATHWAYS</span>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {hypotheses.map((h) => (
-            <div key={h.id} className="bg-navy-900/50 p-4 rounded-lg border border-navy-700/50 space-y-3">
-              <div className="flex justify-between items-center">
-                <h3 className="font-bold text-white text-sm">{h.name}</h3>
-                <span className="font-mono text-sm font-bold text-accent-blue">{h.confidence}%</span>
+          {hypotheses.map((h, idx) => (
+            <div key={h.id} className={`p-4 rounded-lg border transition-all ${
+              idx === 0 ? 'bg-[#111821] border-sky-500/50' : 'bg-[#080B10] border-[#1D2733]'
+            }`}>
+              <div className="flex justify-between items-center mb-1">
+                <h3 className="font-bold text-white text-xs font-mono">{h.name}</h3>
+                <span className="font-mono text-xs font-bold text-sky-400">{h.confidence}%</span>
               </div>
-              <p className="text-xs text-navy-300">{h.description}</p>
-
-              <div className="certainty-bar h-1.5">
-                <div
-                  className="certainty-bar-fill bg-accent-blue"
-                  style={{ width: `${h.confidence}%` }}
-                />
-              </div>
-
-              <div className="text-[11px] text-navy-400">
-                Status: <span className="text-emerald-400 font-semibold uppercase">{h.status}</span>
+              <p className="text-xs text-[#8B98A8] mb-2">{h.description}</p>
+              <div className="certainty-bar h-1">
+                <div className="certainty-bar-fill bg-sky-400" style={{ width: `${h.confidence}%` }} />
               </div>
             </div>
           ))}
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }

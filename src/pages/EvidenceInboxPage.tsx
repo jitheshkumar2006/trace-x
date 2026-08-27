@@ -3,7 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Camera, Users, Shield, FileText, Bus, 
   UploadCloud, MapPin, Clock, Search,
-  CheckCircle2, AlertTriangle, FileBox, ShieldAlert
+  CheckCircle2, AlertTriangle, FileBox, ShieldAlert,
+  Video, Eye
 } from 'lucide-react';
 import { useAppStore, useAuthStore } from '../store/useStore';
 import type { Evidence, EvidenceType } from '../types';
@@ -18,7 +19,7 @@ const tabs: { id: EvidenceType; label: string; icon: React.ElementType }[] = [
 ];
 
 export default function EvidenceInboxPage() {
-  const { activeCase, evidence, addEvidence, addAuditEntry } = useAppStore();
+  const { activeCase, evidence, addEvidence, addAuditEntry, cctv014Investigated } = useAppStore();
   const { currentUser } = useAuthStore();
   
   const [activeTab, setActiveTab] = useState<EvidenceType>('cctv');
@@ -41,7 +42,6 @@ export default function EvidenceInboxPage() {
 
     setIsSubmitting(true);
     
-    // Simulate API call / upload delay
     setTimeout(() => {
       const newEvidenceId = `EVD-${String(Math.floor(Math.random() * 900) + 100)}`;
       
@@ -51,9 +51,9 @@ export default function EvidenceInboxPage() {
         source: source || 'Unknown Source',
         type: activeTab,
         timestamp: time || new Date().toISOString(),
-        latitude: 12.9716, // dummy coordinates
-        longitude: 77.5946,
-        confidence: 0,
+        latitude: 13.0827,
+        longitude: 80.2707,
+        confidence: 85,
         privacyLevel: 'restricted',
         verificationStatus: 'unverified',
         processingStatus: 'pending',
@@ -74,7 +74,6 @@ export default function EvidenceInboxPage() {
         details: `Uploaded new ${activeTab} evidence: ${source}`,
       });
 
-      // Reset form
       setSource('');
       setLocation('');
       setTime('');
@@ -86,23 +85,66 @@ export default function EvidenceInboxPage() {
   if (!activeCase) {
     return (
       <div className="p-8 flex items-center justify-center h-full">
-        <div className="text-slate-400">No active case selected</div>
+        <div className="text-[#8B98A8]">No active case selected</div>
       </div>
     );
   }
 
   return (
     <div className="space-y-6">
-      <header className="border-b border-navy-800 pb-4">
-        <h1 className="text-2xl font-bold text-white flex items-center gap-3">
-          <FileBox className="text-blue-400" size={28} />
-          Clues & Evidence Inbox
-        </h1>
-        <p className="text-xs text-navy-400 mt-1">Upload, view, and analyze clues collected for Case: <span className="font-mono text-blue-400 font-semibold">{activeCase.id}</span></p>
-      </header>
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#1D2733] pb-4">
+        <div>
+          <h1 className="text-2xl font-extrabold text-[#E6EDF3] tracking-tight font-mono flex items-center gap-2">
+            <FileBox className="text-sky-400 w-6 h-6" />
+            EVIDENCE INBOX & AI ANALYSIS
+          </h1>
+          <p className="text-xs text-[#8B98A8] mt-0.5 font-mono">
+            MULTI-SOURCE CLUE CATALOG & AUTOMATED FEATURE EXTRACTION FOR <span className="text-white font-semibold">{activeCase.id}</span>
+          </p>
+        </div>
 
-      {/* Tabs */}
-      <div className="flex flex-wrap gap-2 border-b border-navy-700 pb-4">
+        <span className="prototype-badge font-mono">
+          EVIDENCE CATALOG
+        </span>
+      </div>
+
+      {/* CCTV Viewer Box */}
+      <div className="glass-card p-5 border-sky-500/30 bg-[#0D1219] space-y-3">
+        <div className="flex justify-between items-center font-mono text-xs border-b border-[#1D2733] pb-2">
+          <div className="flex items-center gap-2">
+            <Video className="w-4 h-4 text-sky-400" />
+            <span className="font-bold text-white">CAM-014</span>
+            <span className="text-[#8B98A8]">|</span>
+            <span className="text-emerald-400 font-semibold flex items-center gap-1">
+              <span className="live-pulse-red"></span> REC
+            </span>
+          </div>
+          <div className="text-[#8B98A8]">
+            TIMESTAMP: <span className="text-white font-bold">10:24:31 AM</span>
+          </div>
+        </div>
+
+        <div className="bg-[#080B10] p-6 rounded-lg border border-[#1D2733] relative overflow-hidden flex flex-col items-center justify-center min-h-[140px] text-center space-y-2">
+          <div className="absolute top-3 left-3 text-[10px] font-mono bg-[#111821] px-2 py-0.5 rounded text-sky-400 border border-sky-500/30">
+            CAM-014 FEED SIMULATION
+          </div>
+
+          <div className="flex items-center gap-2 text-emerald-400 font-mono font-bold text-sm bg-emerald-950/40 px-3 py-1.5 rounded border border-emerald-500/40">
+            <Eye className="w-4 h-4" />
+            PERSON DETECTED — MATCH SIMILARITY 84%
+          </div>
+
+          <p className="text-xs text-[#8B98A8] max-w-lg font-mono">
+            {cctv014Investigated
+              ? 'CCTV-014 footage verified at Central Bus Stand. Subject features matched.'
+              : 'Simulated CCTV Camera 014 feed at Central Bus Stand. Person matching subject profile detected.'}
+          </p>
+        </div>
+      </div>
+
+      {/* Category Tabs */}
+      <div className="flex flex-wrap gap-2 border-b border-[#1D2733] pb-4">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const count = caseEvidence.filter(e => e.type === tab.id).length;
@@ -110,15 +152,15 @@ export default function EvidenceInboxPage() {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`tab-btn flex items-center gap-2 ${
+              className={`px-3 py-1.5 rounded-lg font-mono text-xs flex items-center gap-2 border transition-all cursor-pointer ${
                 activeTab === tab.id 
-                  ? 'bg-accent-blue/20 text-accent-blue border border-accent-blue/50' 
-                  : 'bg-navy-800 text-slate-400 border border-navy-700 hover:bg-navy-700'
+                  ? 'bg-[#111821] text-sky-400 border-sky-500/50 shadow-sm' 
+                  : 'bg-[#0D1219] text-[#8B98A8] border-[#1D2733] hover:text-white'
               }`}
             >
-              <Icon size={18} />
+              <Icon size={14} />
               {tab.label}
-              <span className="ml-2 bg-navy-900 px-2 py-0.5 rounded-full text-xs font-mono">
+              <span className="ml-1 bg-[#080B10] px-2 py-0.5 rounded-full text-[10px]">
                 {count}
               </span>
             </button>
@@ -131,43 +173,45 @@ export default function EvidenceInboxPage() {
         key={activeTab}
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="glass-card p-6"
+        className="glass-card p-6 space-y-4"
       >
-        <h2 className="text-xl font-semibold text-slate-200 mb-6 flex items-center gap-2">
-          <UploadCloud className="text-accent-cyan" />
-          Submit {tabs.find(t => t.id === activeTab)?.label}
+        <h2 className="text-sm font-bold text-white uppercase tracking-wider font-mono flex items-center gap-2">
+          <UploadCloud className="text-sky-400 w-4 h-4" />
+          Submit {tabs.find(t => t.id === activeTab)?.label} Clue
         </h2>
         
         <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-slate-400 mb-1">Source Name</label>
+              <label className="block text-xs font-mono text-[#8B98A8] mb-1">Source Name *</label>
               <input 
                 type="text" 
                 className="input-field" 
-                placeholder="e.g. CCTV-042 or John Doe"
+                placeholder="e.g. CCTV-042 or Citizen Sighting #12"
                 value={source}
                 onChange={(e) => setSource(e.target.value)}
                 required
               />
             </div>
+
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-slate-400 mb-1 flex items-center gap-1">
-                  <MapPin size={14} /> Location
+                <label className="block text-xs font-mono text-[#8B98A8] mb-1 flex items-center gap-1">
+                  <MapPin size={12} /> Location
                 </label>
                 <input 
                   type="text" 
                   className="input-field" 
-                  placeholder="Zone, Street..."
+                  placeholder="Zone, Corridor..."
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
                   required
                 />
               </div>
+
               <div>
-                <label className="block text-sm font-medium text-slate-400 mb-1 flex items-center gap-1">
-                  <Clock size={14} /> Time
+                <label className="block text-xs font-mono text-[#8B98A8] mb-1 flex items-center gap-1">
+                  <Clock size={12} /> Time
                 </label>
                 <input 
                   type="time" 
@@ -178,11 +222,12 @@ export default function EvidenceInboxPage() {
                 />
               </div>
             </div>
+
             <div>
-              <label className="block text-sm font-medium text-slate-400 mb-1">Description / Notes</label>
+              <label className="block text-xs font-mono text-[#8B98A8] mb-1">Observation Details</label>
               <textarea 
-                className="input-field min-h-[100px]" 
-                placeholder="Describe the evidence details..."
+                className="input-field min-h-[90px]" 
+                placeholder="Describe observed appearance, clothing, direction of movement..."
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 required
@@ -190,31 +235,31 @@ export default function EvidenceInboxPage() {
             </div>
           </div>
           
-          <div className="flex flex-col h-full">
-            <label className="block text-sm font-medium text-slate-400 mb-1">Media / File Upload</label>
-            <div className="flex-1 border-2 border-dashed border-navy-600 rounded-lg bg-navy-900/50 flex flex-col items-center justify-center p-6 text-center hover:border-accent-blue/50 transition-colors cursor-pointer">
-              <UploadCloud size={48} className="text-slate-500 mb-4" />
-              <p className="text-slate-300 font-medium mb-1">Drag and drop files here</p>
-              <p className="text-slate-500 text-sm mb-4">or click to browse</p>
-              <span className="btn-ghost text-sm">Select Files</span>
+          <div className="flex flex-col h-full space-y-1 font-mono text-xs">
+            <label className="block text-xs text-[#8B98A8] mb-1">Simulated File Upload</label>
+            <div className="flex-1 border border-dashed border-[#1D2733] rounded-lg bg-[#080B10] flex flex-col items-center justify-center p-6 text-center hover:border-sky-500/50 transition-colors cursor-pointer space-y-2">
+              <UploadCloud size={36} className="text-[#8B98A8]" />
+              <p className="text-white font-semibold text-xs">Drag and drop footage or photos</p>
+              <p className="text-[#8B98A8] text-[11px]">JPG, PNG, MP4 up to 100MB</p>
+              <span className="btn-ghost text-xs">Select File</span>
             </div>
           </div>
 
-          <div className="md:col-span-2 flex justify-end pt-4 border-t border-navy-700">
+          <div className="md:col-span-2 flex justify-end pt-4 border-t border-[#1D2733]">
             <button 
               type="submit" 
-              className="btn-primary"
+              className="btn-primary text-xs font-mono uppercase"
               disabled={isSubmitting}
             >
-              {isSubmitting ? 'Submitting...' : 'Submit Evidence'}
+              {isSubmitting ? 'Processing...' : 'Submit Evidence'}
             </button>
           </div>
         </form>
       </motion.div>
 
       {/* Evidence List */}
-      <div>
-        <h2 className="text-xl font-semibold text-slate-200 mb-6">Recent Evidence</h2>
+      <div className="space-y-4">
+        <h2 className="text-sm font-bold text-white uppercase tracking-wider font-mono">CATALOGED EVIDENCE ITEMS</h2>
         <div className="grid grid-cols-1 gap-4">
           <AnimatePresence>
             {caseEvidence.map((item, index) => (
@@ -223,7 +268,7 @@ export default function EvidenceInboxPage() {
           </AnimatePresence>
           
           {caseEvidence.length === 0 && (
-            <div className="glass-card p-12 text-center text-slate-500">
+            <div className="glass-card p-12 text-center text-[#8B98A8] font-mono text-xs">
               No evidence submitted yet for this case.
             </div>
           )}
@@ -233,20 +278,18 @@ export default function EvidenceInboxPage() {
   );
 }
 
-// Sub-component for individual evidence card to handle analysis state
+// Sub-component for individual evidence card
 function EvidenceCard({ item, index }: { item: Evidence, index: number }) {
   const [isAnalyzing, setIsAnalyzing] = useState(item.processingStatus === 'processing');
   const [analysisComplete, setAnalysisComplete] = useState(item.processingStatus === 'analyzed' || item.processingStatus === 'verified' || !!item.analysis);
   const [currentStep, setCurrentStep] = useState(-1);
 
   const analysisSteps = [
-    "Person detection",
-    "Appearance extraction",
-    "Object detection",
-    "Time analysis",
-    "Geolocation analysis",
-    "Evidence reliability analysis",
-    "Cross-case comparison"
+    "Person detected",
+    "Appearance extracted",
+    "Object detected",
+    "Temporal consistency verified",
+    "Geospatial consistency verified"
   ];
 
   const handleAnalyze = () => {
@@ -254,38 +297,36 @@ function EvidenceCard({ item, index }: { item: Evidence, index: number }) {
     setCurrentStep(0);
   };
 
-  // Handle animation sequence
   useEffect(() => {
     if (isAnalyzing && currentStep < analysisSteps.length) {
       const timer = setTimeout(() => {
         setCurrentStep(prev => prev + 1);
-      }, 500); // 500ms delay per step
+      }, 400);
       return () => clearTimeout(timer);
     } else if (isAnalyzing && currentStep === analysisSteps.length) {
-      // Finished
       const finishTimer = setTimeout(() => {
         setIsAnalyzing(false);
         setAnalysisComplete(true);
-      }, 500);
+      }, 400);
       return () => clearTimeout(finishTimer);
     }
   }, [isAnalyzing, currentStep, analysisSteps.length]);
 
   const typeColors: Record<EvidenceType, string> = {
-    cctv: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
-    citizen_sighting: 'bg-green-500/20 text-green-400 border-green-500/30',
-    police_observation: 'bg-indigo-500/20 text-indigo-400 border-indigo-500/30',
-    ngo_report: 'bg-purple-500/20 text-purple-400 border-purple-500/30',
-    transport_clue: 'bg-orange-500/20 text-orange-400 border-orange-500/30',
+    cctv: 'bg-sky-500/10 text-sky-400 border-sky-500/30',
+    citizen_sighting: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
+    police_observation: 'bg-indigo-500/10 text-indigo-400 border-indigo-500/30',
+    ngo_report: 'bg-purple-500/10 text-purple-400 border-purple-500/30',
+    transport_clue: 'bg-amber-500/10 text-amber-400 border-amber-500/30',
   };
 
   const dummyAnalysis = item.analysis || {
-    faceSimilarity: 82,
-    clothingSimilarity: 94,
-    backpackSimilarity: 88,
-    bodySimilarity: 85,
-    timeConsistency: 95,
-    locationConsistency: 90,
+    faceSimilarity: 84,
+    clothingSimilarity: 91,
+    backpackSimilarity: 96,
+    bodySimilarity: 88,
+    timeConsistency: 92,
+    locationConsistency: 88,
     overallLeadScore: 89
   };
 
@@ -293,140 +334,130 @@ function EvidenceCard({ item, index }: { item: Evidence, index: number }) {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.1 }}
-      className="glass-card p-5 border border-navy-700/50 hover:border-navy-600 transition-colors"
+      transition={{ delay: index * 0.08 }}
+      className="glass-card p-5 border border-[#1D2733] space-y-4"
     >
       <div className="flex flex-col md:flex-row gap-6">
-        
-        {/* Left Column: Basic Info */}
-        <div className="flex-1 space-y-4">
-          <div className="flex items-start justify-between">
+        {/* Left Column */}
+        <div className="flex-1 space-y-3">
+          <div className="flex items-start justify-between flex-wrap gap-2">
             <div>
               <div className="flex items-center gap-3 mb-1">
-                <span className="font-mono text-lg font-bold text-slate-200">{item.id}</span>
-                <span className={`px-2 py-0.5 rounded text-xs border ${typeColors[item.type]}`}>
+                <span className="font-mono text-base font-bold text-white">{item.id}</span>
+                <span className={`px-2 py-0.5 rounded text-[10px] font-mono border ${typeColors[item.type]}`}>
                   {item.type.replace('_', ' ').toUpperCase()}
                 </span>
-                <span className="px-2 py-0.5 rounded text-xs border border-navy-600 bg-navy-800 text-slate-400">
-                  {item.privacyLevel.toUpperCase()}
-                </span>
               </div>
-              <p className="text-slate-400 text-sm">Source: <span className="text-slate-200">{item.source}</span></p>
+              <p className="text-xs text-[#8B98A8]">Source: <span className="text-white font-mono">{item.source}</span></p>
             </div>
             
-            {item.verificationStatus === 'potential_lead' && (
-              <div className="warning-label flex items-center gap-2">
-                <AlertTriangle size={14} />
-                Potential Lead — Human Verification Required
+            {(item.verificationStatus === 'potential_lead' || (item.verificationStatus === 'unverified' && analysisComplete)) && (
+              <div className="warning-label flex items-center gap-1.5 font-mono">
+                <AlertTriangle size={13} />
+                POTENTIAL LEAD — HUMAN VERIFICATION REQUIRED
               </div>
-            )}
-            {item.verificationStatus === 'unverified' && analysisComplete && (
-               <div className="warning-label flex items-center gap-2">
-               <AlertTriangle size={14} />
-               Potential Lead — Human Verification Required
-             </div>
             )}
           </div>
 
-          <div className="grid grid-cols-2 gap-4 text-sm">
-            <div className="flex items-center gap-2 text-slate-400">
-              <Clock size={14} className="text-slate-500" />
+          <div className="grid grid-cols-2 gap-4 text-xs font-mono text-[#8B98A8]">
+            <div className="flex items-center gap-2">
+              <Clock size={13} className="text-sky-400" />
               {new Date(item.timestamp).toLocaleString(undefined, { timeStyle: 'short', dateStyle: 'medium' })}
             </div>
-            <div className="flex items-center gap-2 text-slate-400">
-              <MapPin size={14} className="text-slate-500" />
+            <div className="flex items-center gap-2">
+              <MapPin size={13} className="text-sky-400" />
               Candidate Search Zone
             </div>
           </div>
           
-          <p className="text-slate-300 text-sm mt-2">{item.description}</p>
+          <p className="text-xs text-[#E6EDF3]">{item.description}</p>
         </div>
 
-        {/* Right Column: Processing & Analysis */}
-        <div className="flex-1 md:max-w-md bg-navy-900/50 rounded-lg p-4 border border-navy-700">
-          
+        {/* Right Column: Processing & AI Meters */}
+        <div className="flex-1 md:max-w-md bg-[#080B10] rounded-lg p-4 border border-[#1D2733] font-mono text-xs">
           {!isAnalyzing && !analysisComplete && (
-            <div className="h-full flex flex-col items-center justify-center text-center space-y-3">
-              <ShieldAlert className="text-slate-500" size={32} />
-              <p className="text-slate-400 text-sm">Evidence pending AI processing</p>
-              <button onClick={handleAnalyze} className="btn-primary text-sm py-1.5">
-                <Search size={14} className="inline mr-2" />
-                Run Analysis
+            <div className="h-full flex flex-col items-center justify-center text-center space-y-3 py-4">
+              <ShieldAlert className="text-[#8B98A8]" size={28} />
+              <p className="text-[#8B98A8]">Evidence pending automated analysis</p>
+              <button onClick={handleAnalyze} className="btn-primary text-xs py-1.5 uppercase font-mono">
+                <Search size={13} className="inline mr-1" />
+                Run AI Analysis
               </button>
             </div>
           )}
 
           {isAnalyzing && (
             <div className="space-y-3">
-              <div className="text-accent-blue text-sm font-medium mb-4 flex items-center gap-2">
-                <div className="w-4 h-4 rounded-full border-2 border-accent-blue border-t-transparent animate-spin" />
-                AI Analysis in Progress...
+              <div className="text-sky-400 font-bold mb-3 flex items-center gap-2">
+                <div className="w-3.5 h-3.5 rounded-full border-2 border-sky-400 border-t-transparent animate-spin" />
+                ANALYZING EVIDENCE...
               </div>
               <div className="space-y-2">
                 {analysisSteps.map((step, i) => (
-                  <motion.div 
+                  <div 
                     key={step}
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: i <= currentStep ? 1 : 0.3, x: 0 }}
-                    className={`flex items-center gap-2 text-sm ${i < currentStep ? 'text-green-400' : 'text-slate-500'}`}
+                    className={`flex items-center gap-2 text-xs ${i < currentStep ? 'text-emerald-400' : 'text-[#8B98A8]'}`}
                   >
-                    {i < currentStep ? <CheckCircle2 size={14} /> : <div className="w-3.5 h-3.5 rounded-full border border-slate-600 ml-[1px]" />}
+                    {i < currentStep ? <CheckCircle2 size={13} /> : <div className="w-3 h-3 rounded-full border border-[#1D2733]" />}
                     {step}
-                  </motion.div>
+                  </div>
                 ))}
               </div>
             </div>
           )}
 
           {analysisComplete && !isAnalyzing && (
-            <div className="space-y-4 animate-in fade-in duration-300">
-              <div className="flex justify-between items-end mb-2">
-                <h4 className="text-sm font-medium text-slate-300">AI Analysis Results</h4>
+            <div className="space-y-3">
+              <div className="flex justify-between items-center border-b border-[#1D2733] pb-2">
+                <h4 className="font-bold text-white uppercase text-[11px]">EVIDENCE ANALYSIS</h4>
                 <div className="text-right">
-                  <span className="text-xs text-slate-400">Overall Lead Score</span>
-                  <div className="text-lg font-bold text-accent-cyan">{dummyAnalysis.overallLeadScore}%</div>
+                  <span className="text-[10px] text-[#8B98A8] uppercase">OVERALL LEAD SCORE</span>
+                  <div className="text-base font-bold text-sky-400">{dummyAnalysis.overallLeadScore}%</div>
                 </div>
               </div>
               
-              <div className="grid grid-cols-2 gap-3 text-xs">
+              {/* Clean Horizontal Meters */}
+              <div className="space-y-2 text-[11px]">
                 <div>
-                  <div className="flex justify-between mb-1">
-                    <span className="text-slate-400">Face Similarity</span>
-                    <span className="text-slate-200">{dummyAnalysis.faceSimilarity}%</span>
+                  <div className="flex justify-between text-[#8B98A8] mb-0.5">
+                    <span>VISUAL SIMILARITY</span>
+                    <span className="text-white">{dummyAnalysis.faceSimilarity}%</span>
                   </div>
-                  <div className="certainty-bar"><div className="certainty-bar-fill bg-accent-blue" style={{ width: `${dummyAnalysis.faceSimilarity}%` }}></div></div>
+                  <div className="certainty-bar h-1"><div className="certainty-bar-fill bg-sky-400" style={{ width: `${dummyAnalysis.faceSimilarity}%` }}></div></div>
                 </div>
+
                 <div>
-                  <div className="flex justify-between mb-1">
-                    <span className="text-slate-400">Clothing</span>
-                    <span className="text-slate-200">{dummyAnalysis.clothingSimilarity}%</span>
+                  <div className="flex justify-between text-[#8B98A8] mb-0.5">
+                    <span>CLOTHING</span>
+                    <span className="text-white">{dummyAnalysis.clothingSimilarity}%</span>
                   </div>
-                  <div className="certainty-bar"><div className="certainty-bar-fill bg-accent-blue" style={{ width: `${dummyAnalysis.clothingSimilarity}%` }}></div></div>
+                  <div className="certainty-bar h-1"><div className="certainty-bar-fill bg-sky-400" style={{ width: `${dummyAnalysis.clothingSimilarity}%` }}></div></div>
                 </div>
+
                 <div>
-                  <div className="flex justify-between mb-1">
-                    <span className="text-slate-400">Objects/Backpack</span>
-                    <span className="text-slate-200">{dummyAnalysis.backpackSimilarity}%</span>
+                  <div className="flex justify-between text-[#8B98A8] mb-0.5">
+                    <span>OBJECT</span>
+                    <span className="text-white">{dummyAnalysis.backpackSimilarity}%</span>
                   </div>
-                  <div className="certainty-bar"><div className="certainty-bar-fill bg-accent-blue" style={{ width: `${dummyAnalysis.backpackSimilarity}%` }}></div></div>
+                  <div className="certainty-bar h-1"><div className="certainty-bar-fill bg-sky-400" style={{ width: `${dummyAnalysis.backpackSimilarity}%` }}></div></div>
                 </div>
+
                 <div>
-                  <div className="flex justify-between mb-1">
-                    <span className="text-slate-400">Time Consist.</span>
-                    <span className="text-slate-200">{dummyAnalysis.timeConsistency}%</span>
+                  <div className="flex justify-between text-[#8B98A8] mb-0.5">
+                    <span>TIME</span>
+                    <span className="text-white">{dummyAnalysis.timeConsistency}%</span>
                   </div>
-                  <div className="certainty-bar"><div className="certainty-bar-fill bg-accent-cyan" style={{ width: `${dummyAnalysis.timeConsistency}%` }}></div></div>
+                  <div className="certainty-bar h-1"><div className="certainty-bar-fill bg-emerald-400" style={{ width: `${dummyAnalysis.timeConsistency}%` }}></div></div>
+                </div>
+
+                <div>
+                  <div className="flex justify-between text-[#8B98A8] mb-0.5">
+                    <span>LOCATION</span>
+                    <span className="text-white">{dummyAnalysis.locationConsistency}%</span>
+                  </div>
+                  <div className="certainty-bar h-1"><div className="certainty-bar-fill bg-emerald-400" style={{ width: `${dummyAnalysis.locationConsistency}%` }}></div></div>
                 </div>
               </div>
-
-              {item.verificationStatus !== 'potential_lead' && (
-                <div className="pt-3 mt-3 border-t border-navy-700 flex justify-end gap-2">
-                  <button className="btn-danger text-xs py-1 px-3">Dismiss</button>
-                  <button className="bg-green-600 hover:bg-green-500 text-white rounded px-3 py-1 text-xs font-medium transition-colors">
-                    Verify Match
-                  </button>
-                </div>
-              )}
             </div>
           )}
         </div>

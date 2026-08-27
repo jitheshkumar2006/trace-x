@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { FileText, X, Search } from 'lucide-react';
+import { FileText, X } from 'lucide-react';
 import { useAppStore } from '../store/useStore';
 
 export const AuditLogPage: React.FC = () => {
@@ -21,53 +20,34 @@ export const AuditLogPage: React.FC = () => {
     .filter(log => !filterAction || log.action === filterAction)
     .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
 
-  const getActionColor = (action: string) => {
-    switch (action.toLowerCase()) {
-      case 'create': return 'text-status-success';
-      case 'update': return 'text-accent-blue';
-      case 'delete': return 'text-status-danger';
-      case 'view': return 'text-gray-400';
-      case 'login': return 'text-status-info';
-      default: return 'text-gray-300';
-    }
-  };
-
-  const getActionBg = (action: string) => {
-    switch (action.toLowerCase()) {
-      case 'create': return 'bg-status-success/10 border-status-success/20';
-      case 'update': return 'bg-accent-blue/10 border-accent-blue/20';
-      case 'delete': return 'bg-status-danger/10 border-status-danger/20';
-      case 'view': return 'bg-gray-500/10 border-gray-500/20';
-      case 'login': return 'bg-status-info/10 border-status-info/20';
-      default: return 'bg-navy-800 border-navy-700';
-    }
-  };
-
-  // Extract unique values for filters
   const uniqueUsers = Array.from(new Set(auditLog.map(l => l.userName)));
   const uniqueActions = Array.from(new Set(auditLog.map(l => l.action)));
   const uniqueCases = Array.from(new Set(auditLog.map(l => l.caseId).filter(Boolean)));
 
   return (
     <div className="space-y-6">
-      <header className="flex items-center justify-between border-b border-navy-800 pb-4">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#1D2733] pb-4">
         <div>
-          <h1 className="text-2xl font-bold text-white flex items-center gap-3">
-            <FileText className="w-6 h-6 text-blue-400" />
-            System Audit Log
+          <h1 className="text-2xl font-extrabold text-[#E6EDF3] tracking-tight font-mono flex items-center gap-2">
+            <FileText className="w-6 h-6 text-sky-400" />
+            SYSTEM AUDIT LOG
           </h1>
-          <p className="text-xs text-navy-400 mt-1">Immutable security log of all case updates, evidence uploads, and access events</p>
+          <p className="text-xs text-[#8B98A8] mt-0.5 font-mono">
+            IMMUTABLE SECURITY AUDIT TRAIL FOR CASE ACCESS, EVIDENCE LOGS, AND INVESTIGATOR ACTIONS
+          </p>
         </div>
-        <div className="prototype-badge">
-          {filteredLogs.length} Entries Logged
+        <div className="prototype-badge font-mono">
+          {filteredLogs.length} ENTRIES LOGGED
         </div>
-      </header>
+      </div>
 
-      <div className="glass-card p-4 flex flex-wrap gap-4 items-end">
-        <div className="flex-1 min-w-[200px]">
-          <label className="block text-xs font-medium text-gray-400 mb-1">User</label>
+      {/* Filter Toolbar */}
+      <div className="glass-card p-4 flex flex-wrap gap-4 items-end font-mono text-xs">
+        <div className="flex-1 min-w-[180px]">
+          <label className="block text-[#8B98A8] mb-1">USER / OFFICER</label>
           <select 
-            className="input-field w-full text-sm py-2" 
+            className="input-field" 
             value={filterUser} 
             onChange={e => setFilterUser(e.target.value)}
           >
@@ -76,10 +56,10 @@ export const AuditLogPage: React.FC = () => {
           </select>
         </div>
         
-        <div className="flex-1 min-w-[200px]">
-          <label className="block text-xs font-medium text-gray-400 mb-1">Action Type</label>
+        <div className="flex-1 min-w-[180px]">
+          <label className="block text-[#8B98A8] mb-1">ACTION TYPE</label>
           <select 
-            className="input-field w-full text-sm py-2" 
+            className="input-field" 
             value={filterAction} 
             onChange={e => setFilterAction(e.target.value)}
           >
@@ -88,10 +68,10 @@ export const AuditLogPage: React.FC = () => {
           </select>
         </div>
 
-        <div className="flex-1 min-w-[200px]">
-          <label className="block text-xs font-medium text-gray-400 mb-1">Case ID</label>
+        <div className="flex-1 min-w-[180px]">
+          <label className="block text-[#8B98A8] mb-1">CASE ID</label>
           <select 
-            className="input-field w-full text-sm py-2" 
+            className="input-field" 
             value={filterCase} 
             onChange={e => setFilterCase(e.target.value)}
           >
@@ -100,62 +80,50 @@ export const AuditLogPage: React.FC = () => {
           </select>
         </div>
 
-        <button 
-          onClick={clearFilters}
-          className="btn-ghost flex items-center gap-2 py-2 px-4 h-[42px]"
-          disabled={!filterUser && !filterCase && !filterAction}
-        >
-          <X className="w-4 h-4" /> Clear
-        </button>
+        {(filterUser || filterCase || filterAction) && (
+          <button 
+            onClick={clearFilters}
+            className="btn-ghost text-xs text-[#8B98A8] hover:text-white"
+          >
+            <X size={14} /> Clear
+          </button>
+        )}
       </div>
 
-      <div className="space-y-3">
-        {filteredLogs.map((log, index) => (
-          <motion.div
-            key={log.id}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: index * 0.02 }}
-            className={`glass-card-light p-4 border flex flex-col md:flex-row md:items-center gap-4 ${getActionBg(log.action)}`}
-          >
-            <div className="w-48 flex-shrink-0 text-sm font-mono text-gray-400">
-              {new Date(log.timestamp).toLocaleString()}
-            </div>
-            
-            <div className="w-48 flex-shrink-0">
-              <p className="font-medium text-gray-200">{log.userName}</p>
-              <span className="text-xs text-gray-500 font-mono">{log.userId}</span>
-            </div>
+      {/* Timeline Stream */}
+      <div className="glass-card p-5 space-y-3 font-mono text-xs">
+        <h2 className="text-xs font-bold text-white uppercase tracking-wider border-b border-[#1D2733] pb-2">SECURITY EVENT STREAM</h2>
 
-            <div className="w-32 flex-shrink-0">
-              <span className={`text-sm font-bold uppercase tracking-wider ${getActionColor(log.action)}`}>
-                {log.action}
-              </span>
-            </div>
+        <div className="space-y-2">
+          {filteredLogs.map((log) => {
+            const timeStr = new Date(log.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            return (
+              <div key={log.id} className="bg-[#080B10] p-3 rounded-lg border border-[#1D2733] flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div className="flex items-center gap-3 flex-wrap">
+                  <span className="text-sky-400 font-bold">{timeStr}</span>
+                  <span className="text-[#8B98A8]">|</span>
+                  <span className="text-white font-bold">{log.userName.toUpperCase()}</span>
+                  <span className="text-[#8B98A8]">|</span>
+                  <span className="px-2 py-0.5 rounded text-[10px] bg-[#111821] text-sky-300 border border-sky-500/30">
+                    {log.action.toUpperCase()}
+                  </span>
+                  <span className="text-[#8B98A8]">|</span>
+                  <span className="text-sky-400">{log.caseId || 'GLOBAL'}</span>
+                </div>
 
-            <div className="flex-1">
-              <p className="text-sm text-gray-300">
-                <span className="font-medium text-gray-200">{log.target}</span>
-                {log.details && <span className="text-gray-500 ml-2">— {log.details}</span>}
-              </p>
-            </div>
-
-            {log.caseId && (
-              <div className="w-24 flex-shrink-0 text-right">
-                <span className="text-xs font-mono px-2 py-1 bg-navy-900 rounded border border-navy-700 text-gray-400">
-                  {log.caseId}
-                </span>
+                <div className="text-[#E6EDF3] font-sans text-xs sm:text-right">
+                  {log.details}
+                </div>
               </div>
-            )}
-          </motion.div>
-        ))}
+            );
+          })}
 
-        {filteredLogs.length === 0 && (
-          <div className="text-center py-12 glass-card">
-            <Search className="w-12 h-12 text-gray-600 mx-auto mb-4" />
-            <p className="text-gray-400">No audit logs found matching your filters.</p>
-          </div>
-        )}
+          {filteredLogs.length === 0 && (
+            <div className="p-8 text-center text-[#8B98A8]">
+              No audit log entries match the selected filters.
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
