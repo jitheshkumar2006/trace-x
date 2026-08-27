@@ -223,6 +223,15 @@ export const LoginPage: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-3">
+          <a
+            href="#/report"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-orange-500/20 hover:bg-orange-500/30 border border-orange-500/40 text-orange-300 text-xs font-mono font-bold transition-all shadow-sm"
+          >
+            <Info className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Report a Sighting (Public)</span>
+            <span className="sm:hidden">Report Sighting</span>
+          </a>
+
           <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-[11px] font-mono text-emerald-400">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_6px_#22c55e]" />
             SECURE SYSTEM

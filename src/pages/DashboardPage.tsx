@@ -5,15 +5,18 @@ import {
   Clock,
   FileText,
   Users,
-  Search,
-  CheckCircle2,
   Shield,
   Heart,
   Eye,
   ArrowRight,
   Target,
+  Check,
+  X,
+  ExternalLink,
+  PlusCircle,
 } from 'lucide-react';
 import { useAppStore, useAuthStore } from '../store/useStore';
+import type { VerificationStatus } from '../types';
 
 const getCertaintyColor = (value: number) => {
   if (value > 75) return 'bg-emerald-500';
@@ -23,7 +26,17 @@ const getCertaintyColor = (value: number) => {
 };
 
 export default function DashboardPage() {
-  const { cases, activeCase, evidence, gaps, hypotheses, auditLog, cctv014Investigated } = useAppStore();
+  const {
+    cases,
+    activeCase,
+    evidence,
+    gaps,
+    hypotheses,
+    auditLog,
+    cctv014Investigated,
+    updateEvidenceVerification,
+    addAuditEntry,
+  } = useAppStore();
   const { currentUser } = useAuthStore();
   const userRole = currentUser?.role || 'police';
 
@@ -31,11 +44,18 @@ export default function DashboardPage() {
     return {
       activeCasesCount: cases.length || 27,
       newEvidenceCount: evidence.length || 14,
-      highPriorityLeadsCount: evidence.filter(e => e.verificationStatus === 'potential_lead' || e.verificationStatus === 'confirmed').length || 6,
+      highPriorityLeadsCount:
+        evidence.filter(
+          (e) => e.verificationStatus === 'potential_lead' || e.verificationStatus === 'confirmed'
+        ).length || 6,
       unresolvedGapsCount: gaps.length || 8,
       avgCertainty: cctv014Investigated ? 84 : 74,
     };
   }, [cases, evidence, gaps, cctv014Investigated]);
+
+  const citizenSightings = useMemo(() => {
+    return evidence.filter((e) => e.type === 'citizen_sighting' || e.type === 'ngo_report');
+  }, [evidence]);
 
   const certaintyData = useMemo(() => {
     if (!activeCase) return null;
@@ -45,38 +65,44 @@ export default function DashboardPage() {
       { key: 'Location', value: activeCase.certainty.location },
       { key: 'Route', value: activeCase.certainty.route },
       { key: 'CCTV Coverage', value: activeCase.certainty.cctvCoverage },
-      { key: 'Witness', value: activeCase.certainty.witness }
+      { key: 'Witness', value: activeCase.certainty.witness },
     ];
   }, [activeCase]);
 
+  const handleVerify = (id: string, status: VerificationStatus) => {
+    updateEvidenceVerification(id, status);
+    addAuditEntry({
+      caseId: activeCase?.id || 'TRX-2026-001',
+      action: 'evidence_analyzed',
+      userId: currentUser?.id || 'USR-001',
+      userName: currentUser?.name || 'Inspector Rajan Kumar',
+      userRole: userRole,
+      target: id,
+      details: `Officer verified sighting report ${id} as ${status.toUpperCase()} from Dashboard`,
+    });
+  };
+
   const personName = activeCase?.person.name || 'Rahul Sharma';
   const currentCaseId = activeCase?.id || 'TRX-2026-001';
-  const lastLoc = activeCase?.person.lastKnownLocation || 'Chennai Central';
+  const lastLoc = activeCase?.person.lastKnownLocation || 'Chennai Central Railway Station';
 
   return (
     <div className="space-y-6">
-      {/* Top Operational Header */}
+      {/* Top Banner / Heading */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#1D2733] pb-4">
         <div>
-          <h1 className="text-2xl font-extrabold text-[#E6EDF3] tracking-tight font-mono flex items-center gap-2">
-            <Activity className="w-6 h-6 neon-icon-green" />
-            INVESTIGATION COMMAND CENTER
-          </h1>
-          <p className="text-xs text-[#8B98A8] mt-0.5 font-mono">
-            ACTIVE CASE ID: <span className="text-sky-400 font-bold">{currentCaseId}</span> • SUBJECT: <span className="text-white font-semibold">{personName.toUpperCase()}</span>
+          <div className="flex items-center gap-2">
+            <h1 className="text-2xl font-extrabold text-[#E6EDF3] tracking-tight font-mono">TRACE-X COMMAND CENTER</h1>
+            <span className="badge-critical font-mono">PRIORITY CASE ACTIVE</span>
+          </div>
+          <p className="text-xs text-[#8B98A8] mt-0.5 font-sans">
+            AI-Augmented Uncertainty-Aware Intelligence • Smart India Hackathon Prototype
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
-          {cctv014Investigated && (
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 neon-card-green">
-              <CheckCircle2 size={14} className="neon-icon-green" />
-              CCTV-014 INTEGRATED (+23%)
-            </span>
-          )}
-          <span className="prototype-badge font-mono border-emerald-500/30 bg-[#111821]">
-            <span className="live-pulse-neon-green"></span>
-            CONFIDENCE: {activeCase?.certainty.overall}%
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-mono bg-[#0D1219] px-3 py-1.5 rounded-lg border border-[#1D2733] text-sky-400">
+            ACTIVE CASE: <strong className="text-white">{currentCaseId}</strong>
           </span>
         </div>
       </div>
@@ -128,34 +154,46 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {/* Public Citizen Reporting Channel — Police Only */}
+      {/* Public Citizen Reporting Broadcast Channel (Police Only) */}
       {userRole === 'police' && (
-        <div className="bg-[#0B1118] border border-orange-500/30 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-orange-500/15 border border-orange-500/30 flex items-center justify-center flex-shrink-0">
-              <Users className="w-5 h-5 text-orange-400" />
+        <div className="bg-[#0E1724] border border-orange-500/40 rounded-xl p-4 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-lg shadow-orange-950/20">
+          <div className="flex items-center gap-3.5">
+            <div className="w-10 h-10 rounded-xl bg-orange-500/20 border border-orange-500/40 flex items-center justify-center flex-shrink-0 text-orange-400 shadow-[0_0_12px_rgba(249,115,22,0.2)]">
+              <Users className="w-5 h-5" />
             </div>
             <div>
-              <p className="text-xs font-bold text-white font-mono uppercase tracking-wider">
-                PUBLIC CITIZEN SIGHTING PORTAL
-              </p>
-              <p className="text-[11px] text-slate-400 mt-0.5">
-                Share this link with community members to collect anonymous public tips — no login required
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-bold text-white font-mono uppercase tracking-wider">
+                  COMMUNITY CITIZEN REPORTING PORTAL
+                </span>
+                <span className="px-2 py-0.2 rounded text-[10px] font-mono font-bold bg-orange-500/20 text-orange-300 border border-orange-500/40 uppercase">
+                  PUBLIC ACCESS ACTIVE
+                </span>
+              </div>
+              <p className="text-xs text-slate-300 mt-0.5">
+                Anonymous tip collection channel for missing person <strong className="text-white">{personName} ({currentCaseId})</strong>
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-2 flex-shrink-0">
-            <span className="text-[11px] font-mono text-orange-300 bg-orange-500/10 border border-orange-500/20 px-3 py-1.5 rounded-lg hidden sm:block truncate max-w-[200px]">
-              {window.location.origin}/#/report
-            </span>
+
+          <div className="flex items-center gap-2 flex-wrap flex-shrink-0">
             <a
               href="#/report"
               target="_blank"
               rel="noopener noreferrer"
-              className="px-3 py-1.5 rounded-lg bg-orange-500/20 hover:bg-orange-500/30 border border-orange-500/40 text-orange-300 text-xs font-mono font-bold flex items-center gap-1.5 transition-all cursor-pointer"
+              className="px-4 py-2 rounded-lg bg-orange-600 hover:bg-orange-500 text-white text-xs font-mono font-bold flex items-center gap-2 shadow-md transition-all cursor-pointer border border-orange-400/50"
             >
+              <PlusCircle className="w-4 h-4" />
+              <span>TEST PUBLIC REPORT FORM</span>
+              <ExternalLink className="w-3 h-3 opacity-80" />
+            </a>
+
+            <a
+              href="#/citizen-reports"
+              className="px-3.5 py-2 rounded-lg bg-[#111C2A] hover:bg-[#162538] border border-[#22354E] text-sky-400 text-xs font-mono font-bold flex items-center gap-1.5 transition-all"
+            >
+              <span>View All ({citizenSightings.length})</span>
               <ArrowRight className="w-3.5 h-3.5" />
-              OPEN PORTAL
             </a>
           </div>
         </div>
@@ -176,126 +214,128 @@ export default function DashboardPage() {
 
         <div className="glass-card p-4">
           <div className="flex justify-between items-center text-[11px] font-mono text-[#8B98A8] mb-1.5 uppercase tracking-wider">
-            <span>NEW EVIDENCE</span>
+            <span>TOTAL SIGHTINGS</span>
             <FileText className="w-4 h-4 neon-icon-green" />
           </div>
-          <div className="text-2xl font-bold text-white font-mono">{stats.newEvidenceCount}</div>
-          <div className="text-[10px] text-emerald-400 mt-1 font-mono">Cataloged today</div>
+          <div className="text-2xl font-bold text-emerald-400 font-mono">{citizenSightings.length}</div>
+          <div className="text-[10px] text-emerald-400 mt-1 font-mono">Community & Field</div>
         </div>
 
         <div className="glass-card p-4">
           <div className="flex justify-between items-center text-[11px] font-mono text-[#8B98A8] mb-1.5 uppercase tracking-wider">
-            <span>INVESTIGATION GAPS</span>
+            <span>VERIFIED LEADS</span>
+            <Target className="w-4 h-4 text-sky-400" />
+          </div>
+          <div className="text-2xl font-bold text-sky-400 font-mono">{stats.highPriorityLeadsCount}</div>
+          <div className="text-[10px] text-sky-400 mt-1 font-mono">Investigator confirmed</div>
+        </div>
+
+        <div className="glass-card p-4">
+          <div className="flex justify-between items-center text-[11px] font-mono text-[#8B98A8] mb-1.5 uppercase tracking-wider">
+            <span>TIMELINE GAPS</span>
             <AlertTriangle className="w-4 h-4 text-amber-400" />
           </div>
-          <div className="text-2xl font-bold text-white font-mono">{stats.unresolvedGapsCount}</div>
-          <div className="text-[10px] text-amber-400 mt-1 font-mono">10:18 AM - 10:31 AM</div>
+          <div className="text-2xl font-bold text-amber-400 font-mono">
+            {cctv014Investigated ? 0 : stats.unresolvedGapsCount}
+          </div>
+          <div className="text-[10px] text-amber-400 mt-1 font-mono">
+            {cctv014Investigated ? 'Resolved by CCTV-014' : '13-min corridor gap'}
+          </div>
         </div>
 
-        <div className="glass-card p-4">
+        <div className="glass-card p-4 col-span-2 lg:col-span-1">
           <div className="flex justify-between items-center text-[11px] font-mono text-[#8B98A8] mb-1.5 uppercase tracking-wider">
-            <span>HIGH PRIORITY</span>
-            <Target className="w-4 h-4 text-red-400" />
+            <span>OVERALL CERTAINTY</span>
+            <Activity className="w-4 h-4 text-emerald-400 neon-icon-green" />
           </div>
-          <div className="text-2xl font-bold text-white font-mono">{stats.highPriorityLeadsCount}</div>
-          <div className="text-[10px] text-red-400 mt-1 font-mono">Requires verification</div>
-        </div>
-
-        <div className="glass-card p-4">
-          <div className="flex justify-between items-center text-[11px] font-mono text-[#8B98A8] mb-1.5 uppercase tracking-wider">
-            <span>CASE CERTAINTY</span>
-            <Search className="w-4 h-4 neon-icon-green" />
-          </div>
-          <div className="text-2xl font-bold text-white font-mono">{stats.avgCertainty}%</div>
-          <div className="text-[10px] text-emerald-400 mt-1 font-mono">{cctv014Investigated ? 'Up from 61%' : 'Weighted composite'}</div>
-        </div>
-      </div>
-
-      {/* Hero Panel: LIVE INVESTIGATION OVERVIEW */}
-      <div className="glass-card p-6 border-sky-500/30 bg-gradient-to-r from-[#0D1219] via-[#111821] to-[#0D1219] relative overflow-hidden">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-          <div className="space-y-3 max-w-md">
-            <div className="flex items-center gap-2">
-              <span className="live-pulse-red"></span>
-              <h2 className="text-xs font-bold text-red-400 font-mono tracking-widest uppercase">LIVE INVESTIGATION OVERVIEW</h2>
-            </div>
-
-            <div className="space-y-1">
-              <p className="text-2xl font-extrabold text-white font-mono tracking-wide">CASE {currentCaseId}</p>
-              <div className="flex items-center gap-3 text-xs text-[#8B98A8]">
-                <span className="px-2.5 py-0.5 rounded bg-sky-500/10 text-sky-400 border border-sky-500/30 font-bold font-mono">
-                  ● ACTIVE INVESTIGATION
-                </span>
-                <span>Subject: <strong className="text-white">{personName}</strong></span>
-              </div>
-            </div>
-
-            <div className="bg-[#080B10] p-3 rounded-lg border border-[#1D2733] text-xs space-y-1 font-mono">
-              <div className="text-[#8B98A8]">LAST CONFIRMED SPOT</div>
-              <div className="text-white font-bold text-sm flex items-center gap-2">
-                <span>📍 {lastLoc}</span>
-                <span className="text-sky-400 font-normal">| 10:30 AM</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Live Network Connection Stream */}
-          <div className="flex-1 bg-[#080B10]/80 p-4 rounded-xl border border-[#1D2733] space-y-3">
-            <div className="text-[10px] font-mono uppercase tracking-widest text-[#8B98A8] flex items-center justify-between">
-              <span>LIVE EVIDENCE NETWORK STREAM</span>
-              <span className="text-sky-400 font-bold">REAL-TIME LINKAGE</span>
-            </div>
-
-            <div className="flex items-center justify-between gap-2 overflow-x-auto py-2 text-xs font-mono">
-              <div className="px-3 py-2 bg-[#111821] border border-emerald-500/40 rounded text-center min-w-[90px]">
-                <span className="text-emerald-400 font-bold block text-[10px]">LAST KNOWN</span>
-                <span className="text-white text-[11px]">10:18 AM</span>
-              </div>
-
-              <ArrowRight className="w-4 h-4 text-[#8B98A8] flex-shrink-0" />
-
-              <div className="px-3 py-2 bg-[#111821] border border-emerald-500/40 rounded text-center min-w-[90px]">
-                <span className="text-emerald-400 font-bold block text-[10px]">CCTV</span>
-                <span className="text-white text-[11px]">CAM-001</span>
-              </div>
-
-              <ArrowRight className="w-4 h-4 text-[#8B98A8] flex-shrink-0" />
-
-              <div className="px-3 py-2 bg-[#111821] border border-sky-500/40 rounded text-center min-w-[100px]">
-                <span className="text-sky-400 font-bold block text-[10px]">SIGHTING</span>
-                <span className="text-white text-[11px]">Citizen #23</span>
-              </div>
-
-              <ArrowRight className="w-4 h-4 text-[#8B98A8] flex-shrink-0" />
-
-              <div className="px-3 py-2 bg-[#111821] border border-amber-500/40 rounded text-center min-w-[90px]">
-                <span className="text-amber-400 font-bold block text-[10px]">TRANSPORT</span>
-                <span className="text-white text-[11px]">Bus #12</span>
-              </div>
-
-              <ArrowRight className="w-4 h-4 text-[#8B98A8] flex-shrink-0" />
-
-              <div className={`px-3 py-2 rounded text-center min-w-[110px] border ${
-                cctv014Investigated ? 'bg-emerald-950/40 border-emerald-500' : 'bg-red-950/40 border-red-500/60'
-              }`}>
-                <span className={`${cctv014Investigated ? 'text-emerald-400' : 'text-red-400'} font-bold block text-[10px]`}>
-                  {cctv014Investigated ? 'CCTV-014' : 'UNKNOWN CORRIDOR'}
-                </span>
-                <span className="text-white text-[11px]">{cctv014Investigated ? 'Verified 10:24' : '13-Min Gap'}</span>
-              </div>
-
-              <ArrowRight className="w-4 h-4 text-[#8B98A8] flex-shrink-0" />
-
-              <div className="px-3 py-2 bg-[#111821] border border-sky-500/40 rounded text-center min-w-[90px]">
-                <span className="text-sky-400 font-bold block text-[10px]">SEARCH ZONE</span>
-                <span className="text-white text-[11px]">{cctv014Investigated ? 'Zone B (91%)' : 'Zone B (78%)'}</span>
-              </div>
-            </div>
+          <div className="text-2xl font-bold text-white font-mono">{activeCase?.certainty.overall || stats.avgCertainty}%</div>
+          <div className="text-[10px] text-emerald-400 mt-1 font-mono">
+            {cctv014Investigated ? '↑ +23% after CCTV-014' : 'Bayesian weighted'}
           </div>
         </div>
       </div>
 
-      {/* Uncertainty DNA Breakdown & Subject Info */}
+      {/* Live Incoming Citizen Sightings Feed on Dashboard */}
+      <div className="glass-card p-5 space-y-3.5 border-l-4 border-l-orange-500">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#1D2733] pb-3">
+          <div className="flex items-center gap-2">
+            <Users className="w-4 h-4 text-orange-400" />
+            <h2 className="text-sm font-bold text-white uppercase tracking-wider font-mono">
+              LIVE COMMUNITY SIGHTINGS & CITIZEN REPORTS ({citizenSightings.length})
+            </h2>
+          </div>
+          <a
+            href="#/citizen-reports"
+            className="text-xs text-sky-400 hover:underline font-mono flex items-center gap-1"
+          >
+            <span>Open Dedicated Verification Matrix</span>
+            <ArrowRight size={13} />
+          </a>
+        </div>
+
+        <div className="space-y-2.5">
+          {citizenSightings.slice(0, 3).map((sighting) => {
+            const isConfirmed = sighting.verificationStatus === 'confirmed';
+            const isLead = sighting.verificationStatus === 'potential_lead';
+
+            return (
+              <div
+                key={sighting.id}
+                className="bg-[#080B10] p-3.5 rounded-xl border border-[#1D2733] hover:border-orange-500/40 transition-colors space-y-2 text-xs font-mono"
+              >
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <div className="flex items-center gap-2.5">
+                    <span className="font-bold text-white">{sighting.id}</span>
+                    <span className="text-[#8B98A8] text-[11px]">
+                      Source: <strong className="text-slate-200">{sighting.source}</strong>
+                    </span>
+                    <span className="px-2 py-0.2 rounded text-[10px] font-mono bg-sky-500/10 text-sky-300 border border-sky-500/20 uppercase">
+                      {sighting.type.replace('_', ' ')}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <span
+                      className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase border ${
+                        isConfirmed
+                          ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
+                          : isLead
+                          ? 'bg-amber-500/10 text-amber-300 border-amber-500/30'
+                          : 'bg-red-500/10 text-red-400 border border-red-500/30'
+                      }`}
+                    >
+                      {sighting.verificationStatus.replace('_', ' ').toUpperCase()}
+                    </span>
+
+                    {userRole === 'police' && (
+                      <div className="flex items-center gap-1.5 ml-2">
+                        <button
+                          onClick={() => handleVerify(sighting.id, 'confirmed')}
+                          className="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded text-[11px] font-bold flex items-center gap-1 cursor-pointer"
+                        >
+                          <Check size={12} /> Verify
+                        </button>
+                        <button
+                          onClick={() => handleVerify(sighting.id, 'dismissed')}
+                          className="px-2.5 py-1 bg-red-950 hover:bg-red-900 text-red-400 border border-red-500/30 rounded text-[11px] font-bold flex items-center gap-1 cursor-pointer"
+                        >
+                          <X size={12} /> Dismiss
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <p className="text-xs text-slate-200 font-sans bg-[#0D1219] p-2.5 rounded border border-[#1D2733]">
+                  {sighting.description}
+                </p>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Visual Uncertainty & Subject Profile Split */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Case Certainty Overview */}
         <div className="lg:col-span-2 glass-card p-5 space-y-4">
