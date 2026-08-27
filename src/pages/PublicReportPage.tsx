@@ -8,7 +8,8 @@ import {
   FileText,
   CheckCircle,
   ShieldCheck,
-  Eye,
+  Phone,
+  ArrowLeft
 } from 'lucide-react';
 import { useAppStore } from '../store/useStore';
 import type { Evidence } from '../types';
@@ -28,23 +29,43 @@ export default function PublicReportPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setIsProcessing(true);
+
     setTimeout(() => {
       const id = `SIGHT-${Math.floor(1000 + Math.random() * 9000)}`;
       const caseId = activeCase?.id || 'TRX-2026-001';
 
+      let formattedTimestamp = new Date().toISOString();
+      if (time) {
+        const [hours, minutes] = time.split(':');
+        if (hours && minutes) {
+          const d = new Date();
+          d.setHours(parseInt(hours, 10), parseInt(minutes, 10), 0, 0);
+          formattedTimestamp = d.toISOString();
+        }
+      }
+
       const newEvidence: Evidence = {
         id: id,
         caseId: caseId,
-        source: `Public Sighting (${id})`,
-        timestamp: time || new Date().toISOString(),
+        source: contactPhone ? `Citizen Sighting (${contactPhone})` : `Public Community Sighting (${id})`,
+        timestamp: formattedTimestamp,
         type: 'citizen_sighting',
         latitude: 13.0827,
         longitude: 80.2707,
-        confidence: 78,
+        confidence: 82,
         processingStatus: 'analyzed',
         privacyLevel: 'restricted',
         verificationStatus: 'potential_lead',
-        description: `${description} [Location: ${location || 'Central Corridor'}]`,
+        description: `${description} [Location: ${location || 'Central Corridor'}] ${contactPhone ? `[Reporter Contact: ${contactPhone}]` : ''}`,
+        analysis: {
+          faceSimilarity: 78,
+          clothingSimilarity: 88,
+          backpackSimilarity: 84,
+          bodySimilarity: 75,
+          timeConsistency: 92,
+          locationConsistency: 89,
+          overallLeadScore: 82,
+        },
         createdAt: new Date().toISOString(),
       };
 
@@ -54,23 +75,23 @@ export default function PublicReportPage() {
         caseId: caseId,
         action: 'citizen_report_submitted',
         userId: 'PUBLIC',
-        userName: 'Anonymous Citizen',
+        userName: contactPhone ? `Citizen (${contactPhone})` : 'Anonymous Citizen',
         userRole: 'volunteer',
         target: id,
-        details: `Public sighting report submitted at ${location || 'Unknown Location'}`
+        details: `Public sighting ${id} submitted at ${location || 'Unknown Location'}: "${description.slice(0, 40)}..."`,
       });
 
       setReportId(id);
       setIsProcessing(false);
       setIsSubmitted(true);
-    }, 1200);
+    }, 1000);
   };
 
   return (
     <div className="min-h-screen bg-[#080B10]" style={{ backgroundImage: 'radial-gradient(circle at 50% 0%, #0d1522 0%, #080b10 80%)' }}>
       {/* Top Command Header */}
-      <header className="border-b border-[#1D2733] bg-[#0D1219]/90 backdrop-blur-md">
-        <div className="max-w-3xl mx-auto px-4 py-4 flex items-center justify-between">
+      <header className="border-b border-[#1D2733] bg-[#0D1219]/90 backdrop-blur-md sticky top-0 z-20">
+        <div className="max-w-3xl mx-auto px-4 py-3.5 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-lg bg-sky-600 flex items-center justify-center text-white shadow-md shadow-sky-500/20">
               <Radar className="w-5 h-5 text-white" />
@@ -80,9 +101,18 @@ export default function PublicReportPage() {
               <p className="text-[10px] text-sky-400 font-mono uppercase tracking-widest">SECURE SIGHTING REPORT</p>
             </div>
           </div>
-          <span className="text-[10px] text-[#8B98A8] font-mono hidden sm:block">
-            NO LOGIN REQUIRED • ANONYMOUS REPORTING
-          </span>
+          <div className="flex items-center gap-3">
+            <a
+              href="#/"
+              className="text-xs font-mono text-slate-400 hover:text-white flex items-center gap-1 transition-colors"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+              <span>Back to Portal</span>
+            </a>
+            <span className="text-[10px] text-[#8B98A8] font-mono hidden sm:inline-block px-2.5 py-1 rounded bg-[#111821] border border-[#1D2733]">
+              NO LOGIN REQUIRED • ANONYMOUS REPORTING
+            </span>
+          </div>
         </div>
       </header>
 
@@ -93,27 +123,27 @@ export default function PublicReportPage() {
           <div className="space-y-1">
             <p className="text-white font-semibold font-mono">Encrypted Community Reporting Interface</p>
             <p className="text-[#8B98A8]">
-              Your sighting is dispatched directly to authorized law enforcement officers. Your identity is protected under encryption guidelines.
+              Your sighting is dispatched directly to authorized law enforcement officers. Your identity is protected under privacy guidelines.
             </p>
           </div>
         </div>
 
+        {/* Sighting Form Card */}
         <AnimatePresence mode="wait">
           {!isSubmitted ? (
             <motion.form
               key="form"
-              initial={{ opacity: 0, y: 15 }}
+              initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -15 }}
+              exit={{ opacity: 0, y: -10 }}
               onSubmit={handleSubmit}
-              className="glass-card p-6 border border-[#1D2733] space-y-5"
+              className="glass-card p-6 sm:p-8 space-y-5 bg-[#0D1219]"
             >
-              <div className="border-b border-[#1D2733] pb-3">
-                <h2 className="text-sm font-bold text-white uppercase tracking-wider font-mono flex items-center gap-2">
-                  <Eye className="w-4 h-4 text-sky-400" />
-                  SIGHTING DETAILS
-                </h2>
-                <p className="text-xs text-[#8B98A8]">Please provide accurate location and time information</p>
+              <div>
+                <h2 className="text-lg font-bold text-white font-mono tracking-tight">SUBMIT SIGHTING DETAILS</h2>
+                <p className="text-xs text-[#8B98A8] font-sans mt-0.5">
+                  Case File: <strong className="text-white font-mono">{activeCase?.id || 'TRX-2026-001'}</strong> ({activeCase?.person.name || 'Rahul Sharma'})
+                </p>
               </div>
 
               {/* Photo Upload Area */}
@@ -167,7 +197,7 @@ export default function PublicReportPage() {
                     rows={3}
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
-                    placeholder="Describe what you observed (clothing, companion, direction of walk)..."
+                    placeholder="Describe what you observed (clothing, companion, direction of walk, notable items)..."
                     className="input-field pl-9 pt-2.5"
                   />
                 </div>
@@ -176,13 +206,16 @@ export default function PublicReportPage() {
               {/* Optional Phone Contact */}
               <div>
                 <label className="block text-xs font-mono text-[#8B98A8] mb-1">CONTACT NUMBER (OPTIONAL)</label>
-                <input
-                  type="tel"
-                  value={contactPhone}
-                  onChange={(e) => setContactPhone(e.target.value)}
-                  placeholder="Optional phone number for officer verification"
-                  className="input-field"
-                />
+                <div className="relative">
+                  <Phone className="w-4 h-4 text-[#8B98A8] absolute left-3 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="tel"
+                    value={contactPhone}
+                    onChange={(e) => setContactPhone(e.target.value)}
+                    placeholder="Optional phone number for officer follow-up"
+                    className="input-field pl-9"
+                  />
+                </div>
               </div>
 
               {/* Submit Button */}
@@ -198,7 +231,7 @@ export default function PublicReportPage() {
                       ENCRYPTING & TRANSMITTING REPORT...
                     </span>
                   ) : (
-                    '[ SUBMIT SECURELY ]'
+                    '[ SUBMIT SIGHTING SECURELY ]'
                   )}
                 </button>
               </div>
@@ -218,22 +251,29 @@ export default function PublicReportPage() {
                 <h2 className="text-xl font-extrabold text-white font-mono tracking-wider">REPORT RECEIVED</h2>
                 <p className="text-xs text-emerald-400 font-mono font-bold">REPORT ID: {reportId}</p>
                 <p className="text-xs text-[#8B98A8] max-w-md mx-auto pt-2 font-mono">
-                  Your report has been securely submitted. Law enforcement investigators have received your sighting report for verification.
+                  Your sighting report has been securely submitted. Law enforcement investigators have received your observation in the Police Citizen Reports verification dashboard.
                 </p>
               </div>
 
-              <div className="pt-4">
+              <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-3">
                 <button
                   onClick={() => {
                     setIsSubmitted(false);
                     setLocation('');
                     setTime('');
                     setDescription('');
+                    setContactPhone('');
                   }}
                   className="btn-ghost text-xs font-mono"
                 >
                   Submit Another Sighting
                 </button>
+                <a
+                  href="#/"
+                  className="btn-primary text-xs font-mono"
+                >
+                  Return to Portal Home
+                </a>
               </div>
             </motion.div>
           )}
