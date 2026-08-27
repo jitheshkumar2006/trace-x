@@ -128,6 +128,39 @@ export default function DashboardPage() {
         </div>
       )}
 
+      {/* Public Citizen Reporting Channel — Police Only */}
+      {userRole === 'police' && (
+        <div className="bg-[#0B1118] border border-orange-500/30 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-lg bg-orange-500/15 border border-orange-500/30 flex items-center justify-center flex-shrink-0">
+              <Users className="w-5 h-5 text-orange-400" />
+            </div>
+            <div>
+              <p className="text-xs font-bold text-white font-mono uppercase tracking-wider">
+                PUBLIC CITIZEN SIGHTING PORTAL
+              </p>
+              <p className="text-[11px] text-slate-400 mt-0.5">
+                Share this link with community members to collect anonymous public tips — no login required
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <span className="text-[11px] font-mono text-orange-300 bg-orange-500/10 border border-orange-500/20 px-3 py-1.5 rounded-lg hidden sm:block truncate max-w-[200px]">
+              {window.location.origin}/#/report
+            </span>
+            <a
+              href="#/report"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-3 py-1.5 rounded-lg bg-orange-500/20 hover:bg-orange-500/30 border border-orange-500/40 text-orange-300 text-xs font-mono font-bold flex items-center gap-1.5 transition-all cursor-pointer"
+            >
+              <ArrowRight className="w-3.5 h-3.5" />
+              OPEN PORTAL
+            </a>
+          </div>
+        </div>
+      )}
+
       {/* Top 5 Stat Cards Row */}
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
         <div className="glass-card p-4">

@@ -406,6 +406,37 @@ export const LoginPage: React.FC = () => {
                       </div>
                     </div>
                   </div>
+
+                  {/* Public Citizen Sighting Report Button */}
+                  <div className="mt-6 pt-6 border-t border-[#1C2733]">
+                    <div className="text-[10px] font-mono text-slate-500 uppercase tracking-widest mb-3 text-center">
+                      ARE YOU A MEMBER OF THE PUBLIC?
+                    </div>
+                    <button
+                      onClick={() => navigate('/report')}
+                      className="w-full group flex items-center justify-between gap-4 px-5 py-4 rounded-xl bg-[#0E1522] border border-orange-500/40 hover:border-orange-400 hover:bg-[#141c2c] hover:shadow-[0_0_18px_rgba(251,146,60,0.15)] transition-all duration-200 cursor-pointer text-left"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-lg bg-orange-500/15 border border-orange-500/40 flex items-center justify-center text-orange-400 flex-shrink-0 group-hover:scale-105 transition-transform">
+                          <Info className="w-5 h-5" />
+                        </div>
+                        <div>
+                          <div className="text-sm font-bold text-white font-mono tracking-wide group-hover:text-orange-300">
+                            REPORT A SIGHTING
+                          </div>
+                          <div className="text-xs text-slate-400 mt-0.5">
+                            Seen something that may help? Submit an anonymous tip — no login or account required
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex flex-col items-end gap-1 flex-shrink-0">
+                        <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-orange-500/20 text-orange-300 border border-orange-500/30 uppercase">
+                          PUBLIC
+                        </span>
+                        <ArrowRight className="w-4 h-4 text-orange-400 group-hover:translate-x-1 transition-transform" />
+                      </div>
+                    </button>
+                  </div>
                 </div>
               </motion.div>
             )}
